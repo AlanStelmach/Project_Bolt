@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">uDrive</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="phone_number">Phone number</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_surname">Enter your surname</string>
+    <string name="enter_email">Enter your e-mail</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="eneter_phone_number">Enter your phone number</string>
+    <string name="facebook">Facebook</string>
+    <string name="title_activity_maps1">Map</string>
+    <string name="password_remainder">Forget your password?</string>
+    <string name="login_option">Or sign with social account</string>
+    <string name="terms1">By clicking Sign up, you agree to our </string>
+    <string name="terms2">Terms and Conditions</string>
+    <string name="underchar">_</string>
+</resources>

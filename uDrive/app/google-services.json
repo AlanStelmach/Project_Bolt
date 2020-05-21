@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "326036817467",
+    "firebase_url": "https://udrivefb.firebaseio.com",
+    "project_id": "udrivefb",
+    "storage_bucket": "udrivefb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326036817467:android:b773cfa21a5ceaf53d7e1e",
+        "android_client_info": {
+          "package_name": "com.example.udrive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326036817467-ludkbbepshj2goq1ge0r857eetg5v394.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.udrive",
+            "certificate_hash": "6850d801578e97b73052ebbc4cb7cf9eaa190632"
+          }
+        },
+        {
+          "client_id": "326036817467-il3t0l3ui4v0hrqnrjn6tgvhb5evophc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPLYhqHfCR9s098ovgZl7lR4KWqhbMUNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "326036817467-il3t0l3ui4v0hrqnrjn6tgvhb5evophc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

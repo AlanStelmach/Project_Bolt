@@ -21,4 +21,5 @@
     <string name="terms1">By clicking Sign up, you agree to our </string>
     <string name="terms2">Terms and Conditions</string>
     <string name="underchar">_</string>
+    <string name="title_activity_client_map">Map</string>
 </resources>

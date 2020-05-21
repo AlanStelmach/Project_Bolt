@@ -194,20 +194,20 @@
 
         <TextView
             android:id="@+id/terms1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="21dp"
+            android:layout_width="231dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
             android:text="@string/terms1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressBar"
-            app:layout_constraintVertical_bias="0.132" />
+            app:layout_constraintVertical_bias="0.135" />
 
         <TextView
             android:id="@+id/terms2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="21dp"
+            android:layout_marginEnd="24dp"
             android:text="@string/terms2"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

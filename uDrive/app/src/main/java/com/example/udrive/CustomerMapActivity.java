@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,60 +49,100 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private SupportMapFragment mapFragment;
 
     private Button mRequest;
+    private Button menu;
 
     private LatLng pickupLocation;
+
+    private Boolean requestBol = false;
+
+    private Marker pickupMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mRequest = (Button) findViewById(R.id.request);
+        menu = (Button) findViewById(R.id.menuButton);
         //Sprawdza czy jest zgoda na uprawnienia
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+
+            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
         }else{
             mapFragment.getMapAsync(this);
+            mRequest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(requestBol){     //zapytanie sprawdzające czy klient kliknął w przycisk aby anulować zamówienie przejazdu
+                        requestBol = false;
+                        geoQuery.removeAllListeners();
+                        driverLocationRef.removeEventListener(driverLocationRefListener);
+
+                        if(driverFoundID != null)
+                        {
+                            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID);
+                            driverRef.setValue(true);
+                            driverFoundID = null;
+                        }
+                        driverFound = false;
+                        radius = 1;
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.removeLocation(userId);
+
+                        if(pickupMarker != null){
+                            pickupMarker.remove();
+                        }
+                        mRequest.setText("Call for driver");
+
+                    }else{
+                        requestBol = true;
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        //Klikając w przycisk klient wysyła dane do bazy danych o tym gdzie się znajduje w danym momencie
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+
+                        pickupLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                        pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_figma)));
+
+                        mRequest.setText("Getting your driver....");
+
+                        getClosestDriver();
+                    }
+
+                }
+            });
+
+            menu.setOnClickListener(new View.OnClickListener() {    //FUNKCJE DO PRZYCISKU MENU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
-
-        mRequest = (Button) findViewById(R.id.request);
-        mRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                //Klikając w przycisk klient wysyła dane do bazy danych o tym gdzie się znajduje w danym momencie
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
-                GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
-
-                pickupLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
-
-                mRequest.setText("Getting your driver....");
-
-                getClosestDriver();
-            }
-        });
     }
     private int radius = 1;
     private Boolean driverFound = false;
     private String driverFoundID;
+    GeoQuery geoQuery;
     private void getClosestDriver(){        //Funkcja znajdująca kierowce znajdującego się najbliżej klienta
-        DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("driverAvailable");
+        DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("driversAvailable");
         GeoFire geoFire = new GeoFire(driverLocation);
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
         geoQuery.removeAllListeners();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override //id drivera i pozycja
             public void onKeyEntered(String key, GeoLocation location) {
-                if(!driverFound) {
+                if(!driverFound && requestBol) {
                     driverFound = true;
                     driverFoundID = key;
-
-
                     DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID);       //Po pierwsze znajduje najbliższego kierowce
                     String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();                                                               //po czym tworzy instancje dziecko które powiem który kierowca odbierze klienta
                     HashMap map = new HashMap();
@@ -141,12 +182,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     }
 
     private Marker mDriverMarker;
+    private DatabaseReference driverLocationRef;
+    private ValueEventListener driverLocationRefListener;
     private void getDriverLocation(){   //gdy kierowca zostanie znaleziony jego instancja w bazie danych przejdzie do instancji kierowca pracujący , zmieni status, ten podkierowca poda nam aktualną pozycje kierowcy
-        DatabaseReference driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversWorking").child(driverFoundID).child("l");
-        driverLocationRef.addValueEventListener(new ValueEventListener() {
+        driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversWorking").child(driverFoundID).child("l");
+        driverLocationRefListener = driverLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists() && requestBol){
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -171,9 +214,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                     float distance = loc1.distanceTo(loc2); //wyliczenie wartości pomiędzy dwoma punktami
 
-                    mRequest.setText("Driver Found: " + String.valueOf(distance));
+                    if (distance < 100) //zmień napis
+                    {
+                        mRequest.setText("Driver's Here");
+                    }else{
+                        mRequest.setText("Driver Found: " + String.valueOf(distance));
+                    }
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver")); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.auto_figma))); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
                 }
             }
 
@@ -190,10 +238,11 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
-            return;
+            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+        }else {
+            buildGoogleApiClient();
+            mMap.setMyLocationEnabled(true);
         }
-        buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
     }
 
     protected synchronized void buildGoogleApiClient(){

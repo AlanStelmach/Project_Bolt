@@ -21,7 +21,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +42,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     Location mLastLocation;
     LocationRequest mLocationRequest;
     private SupportMapFragment mapFragment;
-
     private String customerId = "";
 
     @Override
@@ -67,8 +68,16 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                        customerId =dataSnapshot.getValue().toString();
+                        customerId = dataSnapshot.getValue().toString();
                         getAssignedCustomerPickupLocation();
+                }else{
+                    customerId = "";
+                    if(pickupMarker != null){
+                        pickupMarker.remove();
+                    }
+                    if (assignedCustomerPickupLocationRefListener != null){
+                        assignedCustomerPickupLocationRef.removeEventListener(assignedCustomerPickupLocationRefListener);
+                    }
                 }
             }
 
@@ -78,12 +87,15 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
+    Marker pickupMarker;
+    private DatabaseReference assignedCustomerPickupLocationRef;
+    private ValueEventListener assignedCustomerPickupLocationRefListener;
     private void getAssignedCustomerPickupLocation(){
-        DatabaseReference assignedCustomerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerId).child("l");
-        assignedCustomerPickupLocationRef.addValueEventListener(new ValueEventListener() {
+        assignedCustomerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerId).child("l");
+        assignedCustomerPickupLocationRefListener = assignedCustomerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists() && !customerId.equals("")){
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -94,7 +106,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     LatLng driverLatLng = new LatLng(locationLat,locationLng);
-                    mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Pickup location")); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
+                    pickupMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Pickup location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_figma))); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
                 }
             }
 
@@ -128,7 +140,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
         if(getApplicationContext() != null) {
-
             mLastLocation = location;
             //w tej funkcji o to że chcemy zmienić centralne położenie kamery w momencie gdy użytkownik zmieni swoją pozycję, aby ekran wyśrodkował tą pozycję
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -157,7 +168,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
 
-    @Override // Funkcja wczytująca się przy starcie aktywności i odczytująca początkową lokalizacje klienta
+    @Override // Funkcja wczytująca się przy starcie aktywności i odczytująca początkową lokalizacje kierowcy
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
         //Będzie się odświeżać lokalizacja co sekundę

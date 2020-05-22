@@ -123,7 +123,7 @@ public class Frag3 extends Fragment {
                 if(task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getActivity(), CustomerMapActivity.class);
+                    Intent intent = new Intent(getActivity(), ChooseUser.class);
                     startActivity(intent);
                 }
                 else

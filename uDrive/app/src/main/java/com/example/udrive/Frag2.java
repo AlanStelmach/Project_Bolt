@@ -97,9 +97,11 @@ public class Frag2 extends Fragment {
                         @Override
                         public void run() {
                             Intent intent = new Intent(getActivity(), SignUp.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
-                    },10000);
+                    },7000);
                 }
             }
         });

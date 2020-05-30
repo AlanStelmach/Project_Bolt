@@ -22,4 +22,14 @@
     <string name="terms2">Terms and Conditions</string>
     <string name="underchar">_</string>
     <string name="title_activity_client_map">Map</string>
+    <string name="choose">Who are you gonna be today?</string>
+    <string name="driver">I\'m driver</string>
+    <string name="customer">I\'m customer</string>
+    <string name="wallet">My wallet</string>
+    <string name="history">History</string>
+    <string name="notifications">Notifications</string>
+    <string name="promo">Promo code</string>
+    <string name="logout">Logout</string>
+    <string name="drawerOpen">drawerOpen</string>
+    <string name="drawerClose">drawerClose</string>
 </resources>

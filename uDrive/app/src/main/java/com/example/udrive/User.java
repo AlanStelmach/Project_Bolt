@@ -1,7 +1,13 @@
 package com.example.udrive;
 
-public class User {
+import androidx.annotation.NonNull;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+public class User {
     private String name;
     private String surname;
     private String email;

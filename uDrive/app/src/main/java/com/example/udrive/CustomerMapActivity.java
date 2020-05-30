@@ -2,18 +2,22 @@ package com.example.udrive;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -30,40 +34,45 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 import java.util.List;
 
-public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
     private SupportMapFragment mapFragment;
-
     private Button mRequest;
-    private Button menu;
-
+    private ImageView menu;
     private LatLng pickupLocation;
-
     private Boolean requestBol = false;
-
     private Marker pickupMarker;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        navigationView = (NavigationView) findViewById(R.id.navigationView1);
+        toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawerOpen,R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mRequest = (Button) findViewById(R.id.request);
-        menu = (Button) findViewById(R.id.menuButton);
+        menu = (ImageView) findViewById(R.id.menuButton);
         //Sprawdza czy jest zgoda na uprawnienia
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -120,10 +129,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 }
             });
 
-            menu.setOnClickListener(new View.OnClickListener() {    //FUNKCJE DO PRZYCISKU MENU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    drawerLayout.openDrawer(Gravity.LEFT);
                 }
             });
         }
@@ -312,5 +321,51 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     protected void onStop() {
         super.onStop();
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId())
+        {
+            case R.id.wallet_item:
+            {
+                Intent intent = new Intent(CustomerMapActivity.this, Wallet.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.history_item:
+            {
+                Intent intent = new Intent(CustomerMapActivity.this, History.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.notifications_item:
+            {
+                Toast.makeText(CustomerMapActivity.this, "Soon Brother... Soon :))", Toast.LENGTH_LONG).show();
+                break;
+            }
+            case R.id.promo_item:
+            {
+                Intent intent = new Intent(CustomerMapActivity.this, Promo_code.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.logout_item:
+            {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(CustomerMapActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CustomerMapActivity.this, SignUp.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                break;
+            }
+            default:
+            {
+                Toast.makeText(CustomerMapActivity.this,"Error! But how?!?!", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+        return false;
     }
 }

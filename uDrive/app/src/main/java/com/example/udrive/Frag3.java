@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Frag3 extends Fragment {
 
@@ -94,12 +94,12 @@ public class Frag3 extends Fragment {
                 }
                  else if(tpassword.isEmpty())
                 {
-                    Toast.makeText(getActivity(),"Please enetr password!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"Please enter password!",Toast.LENGTH_LONG).show();
                     password.requestFocus();
                 }
                 else
                 {
-                    logging_in(temail,tpassword);
+                        logging_in(temail,tpassword);
                 }
             }
         });
@@ -120,19 +120,31 @@ public class Frag3 extends Fragment {
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getActivity(), ChooseUser.class);
-                    startActivity(intent);
+                FirebaseUser user = auth.getCurrentUser();
+                    if (task.isSuccessful()) {
+                        progressBar.setVisibility(View.GONE);
+                        if(user.isEmailVerified()) {
+                            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getActivity(), ChooseUser.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setCancelable(true);
+                            builder.setTitle("Verification first!");
+                            builder.setMessage("We can't let you log in without verification! Please check your e-mail account for more details!");
+                            builder.show();
+                        }
+                    }
+                    else
+                        {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Wrong login or password!", Toast.LENGTH_LONG).show();
+                    }
                 }
-                else
-                {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "Wrong login or password!", Toast.LENGTH_LONG).show();
-                }
-            }
         });
     }
-
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/wallet_item"
+        android:icon="@android:color/holo_green_dark"
+        android:title="@string/wallet"/>
+    <item
+        android:id="@+id/history_item"
+        android:checkable="false"
+        android:icon="@android:color/holo_orange_dark"
+        android:title="@string/history"/>
+    <item
+        android:id="@+id/notifications_item"
+        android:checkable="true"
+        android:icon="@android:color/holo_purple"
+        android:title="@string/notifications"/>
+    <item
+        android:id="@+id/promo_item"
+        android:icon="@android:color/holo_red_dark"
+        android:title="@string/promo"/>
+    <item
+        android:id="@+id/logout_item"
+        android:icon="@android:color/holo_blue_bright"
+        android:title="@string/logout" />
+</menu>

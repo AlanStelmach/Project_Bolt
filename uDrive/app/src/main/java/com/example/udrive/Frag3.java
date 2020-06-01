@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class Frag3 extends Fragment {
     private Button facebook, signinb;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
+    private ImageView fb_iamge;
 
     public Frag3() {}
 
@@ -35,6 +37,7 @@ public class Frag3 extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_frag3, container, false);
 
+        fb_iamge = (ImageView) view.findViewById(R.id.fb_image);
         email = (EditText) view.findViewById(R.id.Email);
         password = (EditText) view.findViewById(R.id.Password);
         signinb = (Button) view.findViewById(R.id.Sign_In_Button);
@@ -48,36 +51,8 @@ public class Frag3 extends Fragment {
         password_remainder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String temail = email.getText().toString();
-                if(temail.isEmpty())
-                {
-                    Toast.makeText(getActivity(),"Please enter e-mail!",Toast.LENGTH_LONG).show();
-                    email.requestFocus();
-                }
-                else
-                {
-                    auth.sendPasswordResetEmail(temail).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                            {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setCancelable(true);
-                                builder.setTitle("E-mail has been send!");
-                                builder.setMessage("Please check your e-mail account for more details!");
-                                builder.show();
-                            }
-                            else
-                            {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setCancelable(true);
-                                builder.setTitle("Error!");
-                                builder.setMessage("Sorry for that! :c");
-                                builder.show();
-                            }
-                        }
-                    });
-                }
+                Intent intent = new Intent(getActivity(), RestoringPassword.class);
+                startActivity(intent);
             }
         });
 
@@ -111,6 +86,13 @@ public class Frag3 extends Fragment {
             }
         });
 
+        fb_iamge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return view;
     }
 
@@ -126,8 +108,7 @@ public class Frag3 extends Fragment {
                         if(user.isEmailVerified()) {
                             Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getActivity(), ChooseUser.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
                         else

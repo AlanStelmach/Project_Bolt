@@ -24,7 +24,8 @@
             android:layout_gravity="top"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/settings" />
+            android:background="@drawable/shape3"
+            android:src="@mipmap/settings"/>
 
         <Button
             android:layout_width="match_parent"

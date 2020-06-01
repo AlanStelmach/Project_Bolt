@@ -30,18 +30,9 @@ public class SignUp extends AppCompatActivity {
                 if (user.isEmailVerified()) {
                     if(user != null) {
                         Intent intent = new Intent(SignUp.this, ChooseUser.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
-                }
-                else
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
-                    builder.setCancelable(true);
-                    builder.setTitle("Verification first!");
-                    builder.setMessage("We can't let you log in without verification! Please check your e-mail account for more details!");
-                    builder.show();
                 }
             }
 

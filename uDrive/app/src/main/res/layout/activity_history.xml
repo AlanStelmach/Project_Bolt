@@ -6,4 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".History">
 
+    <RelativeLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:background="@color/grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back4"
+            android:layout_width="35dp"
+            android:layout_height="25dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="45dp"
+            app:srcCompat="@mipmap/arrow_1" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="243dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="85dp"
+            android:text="@string/history"
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

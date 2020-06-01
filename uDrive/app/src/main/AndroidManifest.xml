@@ -17,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".History"></activity>
+        <activity android:name=".RestoringPassword"></activity>
+        <activity android:name=".Notify" />
+        <activity android:name=".History" />
         <activity android:name=".Wallet" />
         <activity android:name=".Promo_code" />
         <activity android:name=".ChooseUser" />
@@ -46,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Notification" />
     </application>
 
 </manifest>

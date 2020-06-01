@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,10 +61,35 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+    private String data = "com.example.udrive";
+    private String user_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
+                String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
+                String balance = dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class);
+                NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
+                View headerView = navigationView.getHeaderView(0);
+                TextView name_surname = (TextView) headerView.findViewById(R.id.name_surname);
+                TextView account_balance = (TextView) headerView.findViewById(R.id.account_balance);
+                user_value = balance;
+                name_surname.setText(name+" "+surname);
+                account_balance.setText(balance+" PLN");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         setContentView(R.layout.activity_customer_map);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         navigationView = (NavigationView) findViewById(R.id.navigationView1);
@@ -330,6 +357,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             case R.id.wallet_item:
             {
                 Intent intent = new Intent(CustomerMapActivity.this, Wallet.class);
+                intent.putExtra(user_value, data);
                 startActivity(intent);
                 break;
             }
@@ -341,7 +369,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
             case R.id.notifications_item:
             {
-                Toast.makeText(CustomerMapActivity.this, "Soon Brother... Soon :))", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CustomerMapActivity.this, Notification.class);
+                 startActivity(intent);
                 break;
             }
             case R.id.promo_item:
@@ -355,8 +384,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(CustomerMapActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(CustomerMapActivity.this, SignUp.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 break;
             }

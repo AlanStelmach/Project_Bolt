@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:background="@color/white"
+            android:background="@drawable/shape"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/blue"
+                android:background="@drawable/button_background"
                 android:text="@string/sign_in"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
@@ -101,7 +101,7 @@
             android:id="@+id/Facebook"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/fb_color"
+            android:background="@drawable/facebook_button"
             android:text="@string/facebook"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -145,6 +145,17 @@
             app:layout_constraintBottom_toTopOf="@+id/Facebook"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/fb_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="30dp"
+            android:elevation="@android:dimen/notification_large_icon_height"
+            android:src="@mipmap/icons8_facebook_50_1"
+            app:layout_constraintBottom_toBottomOf="@+id/Facebook"
+            app:layout_constraintStart_toStartOf="@+id/Facebook"
+            app:layout_constraintTop_toTopOf="@+id/Facebook" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

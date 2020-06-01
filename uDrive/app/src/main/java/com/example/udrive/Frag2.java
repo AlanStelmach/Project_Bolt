@@ -136,6 +136,11 @@ public class Frag2 extends Fragment {
                                             public void onComplete(@NonNull Task task) {
                                                 if(task.isSuccessful())
                                                 {
+                                                    etname.setText("");
+                                                    etsurname.setText("");
+                                                    etemail.setText("");
+                                                    etpnumber.setText("");
+                                                    etpassword.setText("");
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                                     builder.setCancelable(true);
                                                     builder.setTitle("Verification has been send!");

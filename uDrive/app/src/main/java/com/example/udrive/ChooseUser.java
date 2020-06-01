@@ -23,8 +23,8 @@ public class ChooseUser extends AppCompatActivity {
 
     private TextView greetings;
     private Button customerButton, driverButton;
-    private String name="";
-    private String surname="";
+    private String name;
+    private String surname;
     Location location;
 
     @Override
@@ -32,15 +32,16 @@ public class ChooseUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_user);
         greetings = (TextView) findViewById(R.id.greetings_text);
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser userid = auth.getCurrentUser();
-        assert userid != null;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userid.getUid());
+        FirebaseUser userid = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = userid.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                name = dataSnapshot.child("name").getValue().toString();
-                surname = dataSnapshot.child("surname").getValue().toString();
+
+                name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
+                surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
+                greetings.setText("Hello there "+name+" "+surname+"!");
             }
 
             @Override
@@ -48,7 +49,6 @@ public class ChooseUser extends AppCompatActivity {
 
             }
         });
-        greetings.setText("Hello there "+name+" "+surname+"!");
         customerButton = (Button) findViewById(R.id.customerButton);
         driverButton = (Button) findViewById(R.id.driverButton);
 

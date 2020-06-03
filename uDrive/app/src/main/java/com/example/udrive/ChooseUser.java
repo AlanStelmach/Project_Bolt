@@ -41,7 +41,7 @@ public class ChooseUser extends AppCompatActivity {
 
                 name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
                 surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
-                greetings.setText("Hello there "+name+" "+surname+"!");
+                greetings.setText("Hello there - Dawid to dobry ziomek "+name+" "+surname+"!");
             }
 
             @Override

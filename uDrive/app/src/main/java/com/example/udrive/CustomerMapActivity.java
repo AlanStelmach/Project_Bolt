@@ -133,6 +133,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                         if(pickupMarker != null){
                             pickupMarker.remove();
+                            mDriverMarker.remove();
                         }
                         mRequest.setText("Call for driver");
 
@@ -164,7 +165,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             });
         }
     }
-    private int radius = 1;
+    private int radius = 2;
     private Boolean driverFound = false;
     private String driverFoundID;
     GeoQuery geoQuery;
@@ -188,6 +189,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     //Show driver location on Customer Map
                     getDriverLocation();
                     mRequest.setText("Looking for a Driver Location...");
+
+
                 }
             }
 
@@ -257,7 +260,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mRequest.setText("Driver Found: " + String.valueOf(distance));
                     }
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.auto_figma))); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver")); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
                 }
             }
 
@@ -297,7 +300,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
-
     }
 
 
@@ -347,7 +349,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
     @Override

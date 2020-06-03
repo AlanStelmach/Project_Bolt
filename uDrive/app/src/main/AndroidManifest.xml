@@ -18,12 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".RestoringPassword"></activity>
-        <activity android:name=".Notify" />
+        <activity android:name=".Notification" />
         <activity android:name=".History" />
         <activity android:name=".Wallet" />
         <activity android:name=".Promo_code" />
         <activity android:name=".ChooseUser" />
-        <activity android:name=".CustomerMapActivity" />
+        <activity android:name=".CustomerMapActivity"
+            android:screenOrientation="portrait"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -38,17 +39,18 @@
 
         <activity
             android:name=".DriverMapActivity"
-            android:label="@string/title_activity_client_map" />
+            android:label="@string/title_activity_client_map"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Logout" />
         <activity android:name=".SignUp" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"> <!--linijka ogarniajaca nie obracanie sie apki -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Notification" />
     </application>
 
 </manifest>

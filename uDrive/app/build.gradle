@@ -85,6 +85,7 @@ dependencies {
     compile 'com.firebase:geofire-android:2.1.2'
     compile 'com.google.android.gms:play-services-location:17.0.0'
     compile 'com.firebase:geofire-android:2.1.1'
+    compile 'com.github.jd-alexander:library:1.1.0'
 }
 
 dependencies {
@@ -128,3 +129,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:+'
     implementation 'androidx.constraintlayout:constraintlayout:+'
 }
+
+
+

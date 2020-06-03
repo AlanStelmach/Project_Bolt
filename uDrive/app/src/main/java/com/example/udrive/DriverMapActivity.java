@@ -2,6 +2,7 @@ package com.example.udrive;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -9,6 +10,9 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
@@ -39,6 +43,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +57,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationRequest mLocationRequest;
     private SupportMapFragment mapFragment;
     private String customerId = "";
+    private LinearLayout mCustomerInfo;
+    private ImageView mCustomerProfileImage;
+    private TextView mCustomerName, mCustomerPhone;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +77,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         }else{
             mapFragment.getMapAsync(this);
         }
+        mCustomerInfo = (LinearLayout) findViewById(R.id.customerInfo);
+        mCustomerProfileImage = (ImageView) findViewById(R.id.customerProfileImage);
+        mCustomerName = (TextView) findViewById(R.id.customerName);
+        mCustomerPhone = (TextView) findViewById(R.id.customerPhone);
         getAssignedCustomer();
     }
 
@@ -79,6 +93,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 if(dataSnapshot.exists()){
                         customerId = dataSnapshot.getValue().toString();
                         getAssignedCustomerPickupLocation();
+                        getAssignedCustomerInfo();
                 }else{
                     erasePolylines();
                     customerId = "";
@@ -125,6 +140,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    private void getAssignedCustomerInfo(){
+
     }
 
     private void getRouteToMarker(LatLng pickupLatLng) { //tworzenie lini od lokalizacji kierowcy do lokalizacji klienta

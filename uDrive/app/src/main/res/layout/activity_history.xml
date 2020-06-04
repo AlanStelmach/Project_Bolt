@@ -23,7 +23,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="45dp"
-            app:srcCompat="@mipmap/arrow_1" />
+            app:srcCompat="@mipmap/back_arrow" />
 
         <TextView
             android:id="@+id/textView7"
@@ -37,5 +37,16 @@
             android:textColor="@color/black"
             android:textSize="23sp"
             android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/history_view"
+            android:layout_width="match_parent"
+            android:layout_height="570dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

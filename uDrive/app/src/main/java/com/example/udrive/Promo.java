@@ -1,27 +1,33 @@
 package com.example.udrive;
 
 public class Promo {
-    private String promo;
-    private String value;
+    private String promo_name;
+    private Integer value;
 
-    public Promo(String promo, String value) {
-        this.promo = promo;
+    public Promo()
+    {
+
+    }
+
+    public Promo(String promo_name, Integer value) {
+        this.promo_name = promo_name;
         this.value = value;
     }
 
-    public String getPromo() {
-        return promo;
+    public String getPromo_name() {
+        return promo_name;
     }
 
-    public void setPromo(String promo) {
-        this.promo = promo;
+    public void setPromo_name(String promo_name) {
+        this.promo_name = promo_name;
     }
 
-    public String getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
+
 }

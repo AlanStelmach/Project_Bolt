@@ -20,17 +20,19 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="33dp"
-                android:src="@mipmap/ville_paysage_urbain_horizon_rue_route_ligne_design_illustration_7081_391_removebg_preview_1" />
+                android:src="@mipmap/village2" />
 
             <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
                 android:src="@mipmap/logo_udrive" />
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

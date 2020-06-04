@@ -80,6 +80,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/email"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -93,6 +94,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/password"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -152,7 +154,7 @@
             android:layout_height="25dp"
             android:layout_marginStart="30dp"
             android:elevation="@android:dimen/notification_large_icon_height"
-            android:src="@mipmap/icons8_facebook_50_1"
+            android:src="@mipmap/facebook_icon"
             app:layout_constraintBottom_toBottomOf="@+id/Facebook"
             app:layout_constraintStart_toStartOf="@+id/Facebook"
             app:layout_constraintTop_toTopOf="@+id/Facebook" />

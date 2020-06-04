@@ -23,7 +23,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="45dp"
-            app:srcCompat="@mipmap/arrow_1" />
+            app:srcCompat="@mipmap/back_arrow" />
 
         <TextView
             android:id="@+id/textView6"
@@ -61,55 +61,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imageView10"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
-            android:layout_below="@+id/textView6"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="-35dp"
-            android:layout_marginEnd="30dp"
-            app:srcCompat="@mipmap/rectangle_40" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:layout_alignStart="@+id/imageView10"
-            android:layout_alignTop="@+id/imageView10"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
-            android:text="@string/cash"
-            android:textColor="@color/pinkashell"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/udrive_cash"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:layout_alignStart="@+id/imageView10"
-            android:layout_alignTop="@+id/imageView10"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="130dp"
-            android:textColor="@color/blue"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_below="@+id/imageView10"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="-70dp"
-            android:layout_marginEnd="40dp"
-            app:srcCompat="@mipmap/rectangle_30" />
-
         <TextView
             android:id="@+id/textView10"
             android:layout_width="243dp"
@@ -123,19 +74,81 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/add_funds"
-            android:layout_width="150dp"
-            android:layout_height="25dp"
-            android:layout_alignTop="@+id/imageView10"
-            android:layout_alignEnd="@+id/imageView10"
-            android:layout_marginTop="220dp"
+        <RelativeLayout
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="150dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/button_background"
-            android:text="@string/add_funds"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:background="@drawable/shape_gradient">
+
+            <TextView
+                android:id="@+id/add_funds"
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/button_background"
+                android:text="@string/add_funds"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/cash"
+                android:textColor="@color/pinkashell"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/udrive_cash"
+                android:layout_width="150dp"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="65dp"
+                android:textColor="@color/blue"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="125dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="135dp"
+            android:background="@drawable/shape4">
+
+            <ListView
+                android:id="@+id/wallet_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp" />
+        </RelativeLayout>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

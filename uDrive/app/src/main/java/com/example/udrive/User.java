@@ -1,12 +1,5 @@
 package com.example.udrive;
 
-import androidx.annotation.NonNull;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 public class User {
     private String name;
     private String surname;
@@ -62,9 +55,9 @@ public class User {
         this.pnumber = pnumber;
     }
 
-    public String getWallet() { return wallet; }
+    public String  getWallet() { return wallet; }
 
-    public void setWallet(String wallet) { this.wallet = wallet; }
+    public void setWallet(String  wallet) { this.wallet = wallet; }
 
     public String getIsdriver() { return isdriver; }
 

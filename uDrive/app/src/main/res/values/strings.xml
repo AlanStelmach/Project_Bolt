@@ -44,4 +44,17 @@
     <string name="enter_promo">Enter promo code</string>
     <string name="check">Check code</string>
     <string name="cash">uDrive cash</string>
+    <string name="credit_card">Add credit card</string>
+    <string name="credit_card_number">Credit vard number</string>
+    <string name="exp">Expires</string>
+    <string name="cvv">CVV</string>
+    <string name="save">Save</string>
+    <string name="credit_name">Enter name</string>
+    <string name="stars">**** **** **** ****</string>
+    <string name="date1">mm</string>
+    <string name="date2"> / </string>
+    <string name="date3">yyyy</string>
+    <string name="star">***</string>
+    <string name="value_of_funds">Value of funds</string>
+    <string name="value">000.00 PLN</string>
 </resources>

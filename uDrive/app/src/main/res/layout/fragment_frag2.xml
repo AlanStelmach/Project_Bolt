@@ -54,7 +54,8 @@
                 android:layout_marginBottom="20dp"
                 android:ems="10"
                 android:hint="@string/eneter_phone_number"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:maxLength="9" />
 
             <EditText
                 android:id="@+id/Password1"
@@ -125,6 +126,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/name"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -138,6 +140,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/surname"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -151,6 +154,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/email"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -164,6 +168,7 @@
                 android:layout_marginEnd="150dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/password"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -177,6 +182,7 @@
                 android:layout_marginEnd="100dp"
                 android:layout_marginBottom="1dp"
                 android:text="@string/phone_number"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -210,6 +216,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="54dp"
             android:text="@string/terms2"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

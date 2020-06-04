@@ -75,7 +75,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
                 String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
-                String balance = dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class);
+                String balance = String.valueOf(dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class));
                 NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
                 View headerView = navigationView.getHeaderView(0);
                 TextView name_surname = (TextView) headerView.findViewById(R.id.name_surname);
@@ -358,7 +358,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             case R.id.wallet_item:
             {
                 Intent intent = new Intent(CustomerMapActivity.this, Wallet.class);
-                intent.putExtra(user_value, data);
+                intent.putExtra(data, user_value);
                 startActivity(intent);
                 break;
             }
@@ -377,6 +377,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             case R.id.promo_item:
             {
                 Intent intent = new Intent(CustomerMapActivity.this, Promo_code.class);
+                intent.putExtra(data,user_value);
                 startActivity(intent);
                 break;
             }

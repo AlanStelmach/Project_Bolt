@@ -164,13 +164,19 @@ public class Frag2 extends Fragment {
                                     }
                                 }
                             });
-                            FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().child("Hello").setValue("Brak nowych powiadomień :)").addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("1").child("Hello").setValue("Brak nowych powiadomień :)").addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 
                                 }
                             });
-                            FirebaseDatabase.getInstance().getReference("History").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().child("Hello").setValue("Nie masz żadnej historii przejazdu :)").addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseDatabase.getInstance().getReference("History").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("1").child("Hello").setValue("Nie masz żadnej historii przejazdu :)").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                }
+                            });
+                            FirebaseDatabase.getInstance().getReference("CreditCard").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("numberofcards").setValue(0).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 

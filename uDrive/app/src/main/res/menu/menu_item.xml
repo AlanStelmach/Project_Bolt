@@ -37,6 +37,7 @@
         android:title="" />
     <item
         android:id="@+id/become_driver"
-        android:title="@string/become_driver"/>
+        android:title="@string/become_driver"
+        />
 
 </menu>

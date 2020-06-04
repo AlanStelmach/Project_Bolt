@@ -32,6 +32,7 @@ public class AddingCreditCard extends AppCompatActivity {
     private String yes = "com.example.udrive";
     private Button save;
     private ProgressBar progressBar;
+    private Integer limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,18 +116,15 @@ public class AddingCreditCard extends AppCompatActivity {
                     final ArrayList<CreditCard> creditCards = new ArrayList<>();
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     final String uid = user.getUid();
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Credit_Card").child(uid);
+                    final ArrayList<LimitValue> limitValues = new ArrayList<>();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Credit_Card").child(uid).child("numberofcards");
                     reference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String var1 = snapshot.child("name").getValue(String.class);
-                                String var2 = snapshot.child("number").getValue(String.class);
-                                String var3 = snapshot.child("date").getValue(String.class);
-                                String var4 = snapshot.child("cvv").getValue(String.class);
-                                creditCards.add(new CreditCard(var1, var2, var3, var4));
-                            }
-                            if (creditCards.size() == 2) {
+                            Integer var = dataSnapshot.child("number").getValue(Integer.class);
+                            limitValues.add(new LimitValue(var));
+                            limit = limitValues.get(0).getLimit();
+                            if (limit == 2 || limit > 2) {
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(AddingCreditCard.this, "You can only have two credit cards assigned to this account!", Toast.LENGTH_LONG).show();
                                 save.setClickable(false);

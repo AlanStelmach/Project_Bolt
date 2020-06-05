@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,20 +21,26 @@ public class AddingFunds extends AppCompatActivity {
     private ProgressBar progressBar;
     private String value;
     private String yes = "com.example.udrive";
+    private String chosen_one = "com.example.udrive.creditcard";
+    private String number;
     private Button add_funds;
     private EditText value_of_funds;
     private ImageView back;
+    private TextView payment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         value = intent.getStringExtra(yes);
+        number = intent.getStringExtra(chosen_one);
         setContentView(R.layout.activity_adding_funds);
         progressBar = (ProgressBar) findViewById(R.id.progressBar5);
         back = (ImageView) findViewById(R.id.back7);
         add_funds = (Button) findViewById(R.id.add_button);
         value_of_funds = (EditText) findViewById(R.id.value_of_funds);
+        payment = (TextView) findViewById(R.id.paymenttext);
+        payment.setText(number);
         progressBar.setVisibility(View.GONE);
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +71,7 @@ public class AddingFunds extends AppCompatActivity {
                     value = String.valueOf(result);
                     map.put("wallet", String.valueOf(result));
                     FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(map);
+                    FirebaseDatabase.getInstance().getReference().child("Notifications").child(uid).child("1").push().setValue("You successfully added some funds!");
                     value_of_funds.setText("");
                     Toast.makeText(AddingFunds.this, "Success! Enjoy your funds!", Toast.LENGTH_LONG).show();
                     progressBar.setVisibility(View.GONE);

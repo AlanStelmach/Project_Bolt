@@ -1,6 +1,7 @@
 package com.example.udrive;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +34,7 @@ public class AddingCreditCard extends AppCompatActivity {
     private String yes = "com.example.udrive";
     private Button save;
     private ProgressBar progressBar;
-    private Integer limit;
+    private int limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,52 +113,30 @@ public class AddingCreditCard extends AppCompatActivity {
                     cvv.requestFocus();
                 }
                 else {
-
                     progressBar.setVisibility(View.VISIBLE);
-                    final ArrayList<CreditCard> creditCards = new ArrayList<>();
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     final String uid = user.getUid();
-                    final ArrayList<LimitValue> limitValues = new ArrayList<>();
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Credit_Card").child(uid).child("numberofcards");
-                    reference.addValueEventListener(new ValueEventListener() {
+                    CreditCard creditCard = new CreditCard(name, number, data, cvv_number);
+                    FirebaseDatabase.getInstance().getReference().child("CreditCard").child(uid).push().setValue(creditCard).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Integer var = dataSnapshot.child("number").getValue(Integer.class);
-                            limitValues.add(new LimitValue(var));
-                            limit = limitValues.get(0).getLimit();
-                            if (limit == 2 || limit > 2) {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseDatabase.getInstance().getReference().child("Notifications").child(uid).child("1").push().setValue("You successfully added new credit card "+name+"!");
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(AddingCreditCard.this, "You can only have two credit cards assigned to this account!", Toast.LENGTH_LONG).show();
-                                save.setClickable(false);
+                                credit_card_name.setText("");
+                                credit_card_number.setText("");
+                                date1.setText("");
+                                date2.setText("");
+                                cvv.setText("");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(AddingCreditCard.this);
+                                builder.setCancelable(true);
+                                builder.setTitle("Credit card successfully added!");
+                                builder.setMessage("");
+                                builder.show();
                             } else {
-                                CreditCard creditCard = new CreditCard(name, number, data, cvv_number);
-                                FirebaseDatabase.getInstance().getReference().child("CreditCard").child(uid).child(name).setValue(creditCard).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            progressBar.setVisibility(View.GONE);
-                                            credit_card_name.setText("");
-                                            credit_card_number.setText("");
-                                            date1.setText("");
-                                            date2.setText("");
-                                            cvv.setText("");
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(AddingCreditCard.this);
-                                            builder.setCancelable(true);
-                                            builder.setTitle("Credit card successfully added!");
-                                            builder.setMessage("");
-                                            builder.show();
-                                        } else {
-                                            Toast.makeText(AddingCreditCard.this, "I'm sorry, but something went terribly wrong!", Toast.LENGTH_LONG).show();
-                                            progressBar.setVisibility(View.GONE);
-                                        }
-                                    }
-                                });
+                                Toast.makeText(AddingCreditCard.this, "I'm sorry, but something went terribly wrong!", Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
                             }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
                 }

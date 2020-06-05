@@ -9,6 +9,7 @@
     <RelativeLayout
         android:layout_width="409dp"
         android:layout_height="729dp"
+        android:background="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,17 +66,23 @@
 
         <RelativeLayout
             android:layout_width="200dp"
-            android:layout_height="65dp"
+            android:layout_height="60dp"
             android:layout_below="@+id/value_of_funds"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="60dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape4" >
 
-            <ListView
+            <TextView
+                android:id="@+id/paymenttext"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <TextView

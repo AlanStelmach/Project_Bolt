@@ -128,13 +128,13 @@
 
         <RelativeLayout
             android:layout_width="300dp"
-            android:layout_height="125dp"
+            android:layout_height="180dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="135dp"
+            android:layout_marginBottom="80dp"
             android:background="@drawable/shape4">
 
             <ListView
@@ -145,8 +145,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:padding="15dp"
-                android:background="@drawable/shape4" />
+                android:padding="15dp" />
         </RelativeLayout>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

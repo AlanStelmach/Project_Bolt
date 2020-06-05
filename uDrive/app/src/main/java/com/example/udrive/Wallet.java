@@ -28,7 +28,7 @@ public class Wallet extends AppCompatActivity {
     private String chosen_one = "com.example.udrive.creditcard";
     private ListView cardview;
     private String number="";
-    final ArrayList<String> creditCards = new ArrayList<>();
+    final ArrayList<String> creditCardsnumber = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class Wallet extends AppCompatActivity {
                 for (int i = 0; i < cardview.getChildCount(); i++) {
                     if (position == i) {
                         cardview.getChildAt(i).setBackgroundColor(getColor(R.color.blue));
-                        number = creditCards.get(position);
+                        number = creditCardsnumber.get(position);
                     } else {
                         cardview.getChildAt(i).setBackgroundColor(getColor(R.color.white));
                     }
@@ -115,13 +115,13 @@ public class Wallet extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                creditCards.clear();
+                creditCardsnumber.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     String var1 = snapshot.child("number").getValue(String.class);
-                    creditCards.add(var1);
+                    creditCardsnumber.add(var1);
                 }
-                ArrayAdapter adapter = new ArrayAdapter(Wallet.this, R.layout.list_item,creditCards);
+                ArrayAdapter adapter = new ArrayAdapter(Wallet.this, R.layout.list_item, R.id.label, creditCardsnumber);
                 cardview.setAdapter(adapter);
             }
             @Override

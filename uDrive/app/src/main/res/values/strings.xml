@@ -57,4 +57,5 @@
     <string name="star">***</string>
     <string name="value_of_funds">Value of funds</string>
     <string name="value">000.00 PLN</string>
+    <string name="credit_name_spec">Enter name (MasterCard / Visa)</string>
 </resources>

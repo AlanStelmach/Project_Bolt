@@ -164,18 +164,6 @@ public class Frag2 extends Fragment {
                                     }
                                 }
                             });
-                            FirebaseDatabase.getInstance().getReference("Notifications").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("1").child("Hello").setValue("Out of notifications!").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                }
-                            });
-                            FirebaseDatabase.getInstance().getReference("History").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("1").child("Hello").setValue("It's seems that you haven't travel anywhere yet!").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                }
-                            });
                         }
                         else {
                             Toast.makeText(getActivity(),"Error!", Toast.LENGTH_LONG).show();

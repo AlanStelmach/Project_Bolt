@@ -1,14 +1,15 @@
 package com.example.udrive;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,8 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Objects;
 
 public class ChooseUser extends AppCompatActivity {
 
@@ -64,14 +63,14 @@ public class ChooseUser extends AppCompatActivity {
         });
 
         driverButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference createDriver = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId);
-                createDriver.setValue(true);
-                Intent intent = new Intent(ChooseUser.this, DriverMapActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
+        @Override
+        public void onClick(View v) {
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference createDriver = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId);
+            createDriver.setValue(true);
+            Intent intent = new Intent(ChooseUser.this, DriverMapActivity.class);
+            startActivity(intent);
+        }
+    });
+}
 }

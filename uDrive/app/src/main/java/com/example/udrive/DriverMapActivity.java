@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener , RoutingListener {
 
@@ -55,7 +57,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private String customerId = "";
     private LinearLayout mCustomerInfo;
     private ImageView mCustomerProfileImage;
-    private TextView mCustomerName, mCustomerPhone;
+    private TextView mCustomerName, mCustomerPhone, mCustomerSurname;
 
 
     @Override
@@ -75,6 +77,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mCustomerInfo = (LinearLayout) findViewById(R.id.customerInfo);
         mCustomerProfileImage = (ImageView) findViewById(R.id.customerProfileImage);
         mCustomerName = (TextView) findViewById(R.id.customerName);
+        mCustomerSurname = (TextView) findViewById(R.id.customerSurname);
         mCustomerPhone = (TextView) findViewById(R.id.customerPhone);
         getAssignedCustomer();
     }
@@ -98,6 +101,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     if (assignedCustomerPickupLocationRefListener != null){
                         assignedCustomerPickupLocationRef.removeEventListener(assignedCustomerPickupLocationRefListener);
                     }
+                    mCustomerInfo.setVisibility(View.GONE);
+                    mCustomerName.setText("");
+                    mCustomerSurname.setText("");
+                    mCustomerPhone.setText("");
                 }
             }
 
@@ -136,9 +143,32 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
     }
-
+    String custID;
     private void getAssignedCustomerInfo(){
+        DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(customerId);
+        mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("name")!=null) {
+                        mCustomerName.setText(map.get("name").toString());
+                    }
+                    if(map.get("surname")!=null) {
+                        mCustomerSurname.setText(map.get("surname").toString());
+                    }
+                    if(map.get("pnumber")!=null) {
+                       mCustomerPhone.setText(map.get("pnumber").toString());
+                    }
 
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getRouteToMarker(LatLng pickupLatLng) { //tworzenie lini od lokalizacji kierowcy do lokalizacji klienta

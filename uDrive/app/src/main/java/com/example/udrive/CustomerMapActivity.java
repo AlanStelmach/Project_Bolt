@@ -12,14 +12,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
-
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -44,7 +42,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,29 +66,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String uid = user.getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
-                String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
-                String balance = String.valueOf(dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class));
-                NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
-                View headerView = navigationView.getHeaderView(0);
-                TextView name_surname = (TextView) headerView.findViewById(R.id.name_surname);
-                TextView account_balance = (TextView) headerView.findViewById(R.id.account_balance);
-                user_value = balance;
-                name_surname.setText(name+" "+surname);
-                account_balance.setText(balance+" PLN");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
         setContentView(R.layout.activity_customer_map);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         navigationView = (NavigationView) findViewById(R.id.navigationView1);
@@ -102,6 +76,18 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mRequest = (Button) findViewById(R.id.request);
         menu = (ImageView) findViewById(R.id.menuButton);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
+        View headerView = navigationView.getHeaderView(0);
+        ImageView profilepic = (ImageView) headerView.findViewById(R.id.profilePic);
+
+        profilepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CustomerMapActivity.this, Settings.class);
+                startActivity(intent);
+            }
+        });
+
         //Sprawdza czy jest zgoda na uprawnienia
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -167,6 +153,39 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             });
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+
+
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
+                String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
+                String balance = String.valueOf(dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class));
+                NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
+                View headerView = navigationView.getHeaderView(0);
+                TextView name_surname = (TextView) headerView.findViewById(R.id.name_surname);
+                TextView account_balance = (TextView) headerView.findViewById(R.id.account_balance);
+                user_value = balance;
+                name_surname.setText(name+" "+surname);
+                account_balance.setText(balance+" PLN");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private int radius = 2;
     private Boolean driverFound = false;
     private String driverFoundID;

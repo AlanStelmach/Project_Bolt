@@ -164,6 +164,7 @@ public class Frag2 extends Fragment {
                                     }
                                 }
                             });
+                            //
                         }
                         else {
                             Toast.makeText(getActivity(),"Error!", Toast.LENGTH_LONG).show();

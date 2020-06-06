@@ -1,2 +1,2 @@
 Wallet, AddingCreditCard, AddingFunds, PromoCode, History, Notifications - zrobione
-Seetings, logowanie przez Facebook'a do zrobienia
+Seetings prawie skończone - brakuje jeszcze upload'u i download'u obrazków, logowanie przez Facebook'a do zrobienia

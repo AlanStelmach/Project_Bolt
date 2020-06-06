@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddingFunds"></activity>
+        <activity android:name=".Settings"></activity>
+        <activity android:name=".AddingFunds" />
         <activity android:name=".AddingCreditCard" />
         <activity android:name=".RestoringPassword" />
         <activity android:name=".Notification" />

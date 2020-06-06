@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,6 +52,7 @@ public class Promo_code extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 final String promocode = promo_code.getText().toString();
                 final ArrayList<Promo> promos = new ArrayList<>();
+                final ArrayList<String> usedpromos = new ArrayList<>();
                 if(promocode.isEmpty())
                 {
                     Toast.makeText(Promo_code.this, "Please enter promo code!",Toast.LENGTH_LONG).show();
@@ -57,39 +60,75 @@ public class Promo_code extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                 }
                 else {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Promo");
-                    ref.addValueEventListener(new ValueEventListener() {
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("UsedPromo").child(uid);
+                    reference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            promos.clear();
-                            boolean check = false;
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String var1 = snapshot.child("name").getValue(String.class);
-                                Integer var2 = snapshot.child("value").getValue(Integer.class);
-                                promos.add(new Promo(var1,var2));
+                            usedpromos.clear();
+                            boolean used = false;
+                            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren())
+                            {
+                                String var = dataSnapshot1.getValue(String.class);
+                                usedpromos.add(var);
                             }
-                            for (int i = 0; i < promos.size(); i++) {
-                                if (promocode.equals(promos.get(i).getPromo_name())) {
-                                    check = true;
-                                    value = promos.get(i).getValue();
+                            for (int i = 0; i < usedpromos.size(); i++) {
+                                if (promocode.equals(usedpromos.get(i))) {
+                                    used = true;
                                     break;
                                 }
                             }
-                            if (check) {
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                final String uid = user.getUid();
-                                final HashMap<String, Object> map = new HashMap<>();
-                                int result = var_wallet+value;
-                                map.put("wallet", String.valueOf(result));
-                                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(map);
-                                promo_code.setText("");
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(Promo_code.this, "You get extra money to your use!", Toast.LENGTH_LONG).show();
+                            if(used == false) {
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Promo");
+                                ref.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        promos.clear();
+                                        boolean check = false;
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            String var1 = snapshot.child("name").getValue(String.class);
+                                            Integer var2 = snapshot.child("value").getValue(Integer.class);
+                                            promos.add(new Promo(var1, var2));
+                                        }
+                                        for (int i = 0; i < promos.size(); i++) {
+                                            if (promocode.equals(promos.get(i).getPromo_name())) {
+                                                check = true;
+                                                value = promos.get(i).getValue();
+                                                break;
+                                            }
+                                        }
+                                        if (check) {
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            final String uid = user.getUid();
+                                            final HashMap<String, Object> map = new HashMap<>();
+                                            int result = var_wallet + value;
+                                            map.put("wallet", String.valueOf(result));
+                                            FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(map);
+                                            FirebaseDatabase.getInstance().getReference().child("UsedPromo").child(uid).push().setValue(promocode).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+
+                                                }
+                                            });
+                                            promo_code.setText("");
+                                            progressBar.setVisibility(View.GONE);
+                                            Toast.makeText(Promo_code.this, "You get extra money to your use!", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            progressBar.setVisibility(View.GONE);
+                                            Toast.makeText(Promo_code.this, "Promo code not found!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
                             else
-                                {
+                            {
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(Promo_code.this, "Promo code not found!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Promo_code.this, "This promo code was allready used on this account!", Toast.LENGTH_LONG).show();
                             }
                         }
 

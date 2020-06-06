@@ -127,7 +127,7 @@ public class Notification extends AppCompatActivity {
                     notify.add(var1);
                     keys.add(var2);
                 }
-                if(notify.size()==0)
+                if(notify.size() == 0)
                 {
                     notify.add("Out of notifications!");
                 }

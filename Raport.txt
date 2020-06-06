@@ -1,1 +1,2 @@
-Wszelkie aktywności z portfelem, dodawaniem funduszy i dodawaniem kart są zakończone. History do dokończenia. Notifications zrobione. Aby dodać jakie kolwiek powiadomienie możesz dodać kartę lub fundusze do Swojego konta. Dopracuję jeszcze Wallet aby wyświetlał odpowiednie powiadomienie gdy nie masz żadnej karty i żeby nie pozwalał Ci dodawać funduszy w tej samej sytuacji. Logowanie przez Facebook'a... zapominam cały czas o nim, ale będzie! Promo code - jedno razowe kody zostawie na później. Settings też będzie oczywiście. Dziś wieczorem do tego siądę jeszcze.
+Wallet, AddingCreditCard, AddingFunds, PromoCode, History, Notifications - zrobione
+Seetings, logowanie przez Facebook'a do zrobienia

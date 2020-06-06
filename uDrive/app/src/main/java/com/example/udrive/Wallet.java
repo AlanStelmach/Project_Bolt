@@ -82,6 +82,14 @@ public class Wallet extends AppCompatActivity {
                     builder.setMessage("Please select payment method from list below.");
                     builder.show();
                 }
+                else if(number.equals("No any credit card"))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Wallet.this);
+                    builder.setCancelable(true);
+                    builder.setTitle("Add some credit card!");
+                    builder.setMessage("Please add some credit card first.");
+                    builder.show();
+                }
                 else {
                     Intent intent = new Intent(Wallet.this, AddingFunds.class);
                     intent.putExtra(yes, value);
@@ -120,6 +128,11 @@ public class Wallet extends AppCompatActivity {
                 {
                     String var1 = snapshot.child("number").getValue(String.class);
                     creditCardsnumber.add(var1);
+                }
+                if(creditCardsnumber.size() == 0)
+                {
+                    creditCardsnumber.add("No any credit card");
+                    number = creditCardsnumber.get(0);
                 }
                 ArrayAdapter adapter = new ArrayAdapter(Wallet.this, R.layout.list_item, R.id.label, creditCardsnumber);
                 cardview.setAdapter(adapter);

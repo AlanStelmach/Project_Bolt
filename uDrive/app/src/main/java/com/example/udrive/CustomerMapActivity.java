@@ -86,6 +86,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         navigationView = (NavigationView) findViewById(R.id.navigationView1);
         toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawerOpen,R.string.drawerClose);
@@ -118,18 +119,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-        //Sprawdza czy jest zgoda na uprawnienia
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
-
-            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-        }else{
-            mapFragment.getMapAsync(this);
-            mRequest.setOnClickListener(new View.OnClickListener() {
+        mapFragment.getMapAsync(this);
+        mRequest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if(requestBol){     //zapytanie sprawdzające czy klient kliknął w przycisk aby anulować zamówienie przejazdu
                        endRide();
                     }else{
@@ -148,9 +141,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                         getClosestDriver();
                     }
-
                 }
-            });
+        });
 
             menu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -159,7 +151,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 }
             });
         }
-    }
 
     @Override
     protected void onStart() {
@@ -194,7 +185,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         // Specify the types of place data to return.
-        Objects.requireNonNull(autocompleteFragment).setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        Objects.requireNonNull(autocompleteFragment).setPlaceFields(Arrays.asList(Place.Field.LAT_LNG,Place.Field.ID, Place.Field.NAME));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -225,8 +216,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 if(!driverFound && requestBol) {
                     driverFound = true;
                     driverFoundID = key;
-                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");       //Po pierwsze znajduje najbliższego kierowce
-                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();                                                               //po czym tworzy instancje dziecko które powiem który kierowca odbierze klienta
+                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
+                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     if(destinationLatLng!= null) {
                         HashMap map = new HashMap();
                         map.put("customerRideId", customerId);
@@ -345,12 +336,12 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     private DatabaseReference driveHasEndedRef;
     private ValueEventListener driveHasEndedRefListener;
-    private void getHasRideEnded(){     //przypisz klienta dla kierowcy
+    private void getHasRideEnded(){
         driveHasEndedRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest").child("customerRideId");
         driveHasEndedRefListener = driveHasEndedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                 if(dataSnapshot.exists()){
 
                 }else{
                     endRide();

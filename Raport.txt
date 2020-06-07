@@ -1,2 +1,11 @@
 Wallet, AddingCreditCard, AddingFunds, PromoCode, History, Notifications - zrobione
 Seetings prawie skończone - brakuje jeszcze upload'u i download'u obrazków, logowanie przez Facebook'a do zrobienia
+
+Michał:
+Wyświetlania dla kierowcy danych o kliencie, wyświetlanie kllientowi danych o kierowcy - dostosować zmiane image dla profili 
+Trackowanie drogi do klienta dla kierowcy 
+Możliwość przeszukiwania lokalizacji przez autocomplete dla klienta 
+Zmodyfikowane tworzenie rekordów Customers i Drivers w bazie danych 
+Design nie ruszony 
+
+Do naprawy: Wyrzuca jakiś błąd przy tworzeniu CutomerRequest jest automatycznie usuwane 

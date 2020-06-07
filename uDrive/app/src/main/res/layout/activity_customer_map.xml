@@ -16,24 +16,89 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+        
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/menuButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="top"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape3"
+                android:src="@mipmap/settings"/>
+            <androidx.cardview.widget.CardView
+                android:layout_below="@+id/menuButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp">
+                <fragment
+                    android:id="@+id/autocomplete_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                    />
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/menuButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="top"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/shape3"
-            android:src="@mipmap/settings"/>
-
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="call Driver"
-            android:id="@+id/request"
-            android:layout_gravity="bottom"
-            />
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/driverInfo"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:background="@android:color/white"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:id="@+id/driverProfileImage"
+                    android:src="@drawable/ghost"
+                    android:padding="20sp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="40sp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/driverName"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="20sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/driverSurname"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="20sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/driverCar"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="20sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="call Driver"
+                android:id="@+id/request"
+                android:layout_gravity="bottom"
+                />
+        </LinearLayout>
+
+
     </FrameLayout>
 
     <com.google.android.material.navigation.NavigationView

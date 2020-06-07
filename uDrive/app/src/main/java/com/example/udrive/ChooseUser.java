@@ -1,7 +1,6 @@
 package com.example.udrive;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +23,6 @@ public class ChooseUser extends AppCompatActivity {
     private Button customerButton, driverButton;
     private String name;
     private String surname;
-    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,6 @@ public class ChooseUser extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
         customerButton = (Button) findViewById(R.id.customerButton);
@@ -54,9 +51,10 @@ public class ChooseUser extends AppCompatActivity {
         customerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference createCustomer = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userId);
-               createCustomer.setValue(true);
+                DatabaseReference createCustomer = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(uid);
+                createCustomer.setValue(true);
+                createCustomer.child("name").setValue(name);
+                createCustomer.child("surname").setValue(surname);
                Intent intent = new Intent(ChooseUser.this, CustomerMapActivity.class);
                startActivity(intent);
             }
@@ -65,12 +63,17 @@ public class ChooseUser extends AppCompatActivity {
         driverButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference createDriver = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId);
+            DatabaseReference createDriver = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(uid);
             createDriver.setValue(true);
+            createDriver.child("name").setValue(name);
+            createDriver.child("surname").setValue(surname);
             Intent intent = new Intent(ChooseUser.this, DriverMapActivity.class);
             startActivity(intent);
         }
     });
 }
+
+
+
+
 }

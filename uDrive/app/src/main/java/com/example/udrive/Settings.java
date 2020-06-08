@@ -3,16 +3,26 @@ package com.example.udrive;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +31,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -34,11 +51,17 @@ public class Settings extends AppCompatActivity {
     private ImageView back;
     private ProgressBar progressBar;
     private Uri imageuri;
+    private static final int IMAGE_REQUEST = 1;
+    private String returnpoint = "com.example.udrive";
+    private String returnoption;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Intent intent = getIntent();
+        returnoption = intent.getStringExtra(returnpoint);
         back = (ImageView) findViewById(R.id.back8);
         edit_profile_name = (EditText) findViewById(R.id.edit_profile_name);
         edit_profile_surname = (EditText) findViewById(R.id.edit_profile_surname);
@@ -53,9 +76,17 @@ public class Settings extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Settings.this, CustomerMapActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                if(returnoption.equals("1")) {
+                    Intent intent = new Intent(Settings.this, CustomerMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                else  if(returnoption.equals("2"))
+                {
+                    Intent intent = new Intent(Settings.this, DriverMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -91,6 +122,20 @@ public class Settings extends AppCompatActivity {
                     hashMap.put("surname",surname);
                     hashMap.put("pnumber",pnumber);
                     FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(hashMap);
+                    if(returnoption.equals("1"))
+                    {
+                        final HashMap<String, Object> map = new HashMap<>();
+                        map.put("name", name);
+                        map.put("surname", surname);
+                        FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(uid).updateChildren(map);
+                    }
+                    else if(returnoption.equals("2"))
+                    {
+                        final HashMap<String, Object> map = new HashMap<>();
+                        map.put("name", name);
+                        map.put("surname", surname);
+                        FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(uid).updateChildren(map);
+                    }
                     Toast.makeText(Settings.this, "Success!", Toast.LENGTH_LONG).show();
                     progressBar.setVisibility(View.GONE);
                 }
@@ -131,6 +176,16 @@ public class Settings extends AppCompatActivity {
 
             }
         });
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference reference = storage.getReference().child("Users_Images").child(uid).child("1");
+        reference.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                profilepicture.setImageBitmap(bitmap);
+            }
+        });
     }
 
     private void FileChooser()
@@ -138,16 +193,59 @@ public class Settings extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
+        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
             imageuri = data.getData();
+            UploadImage();
         }
     }
 
+    private String getFileExtension (Uri uri)
+    {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void UploadImage()
+    {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading...");
+        progressDialog.show();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        if(imageuri != null)
+        {
+            final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("Users_Images").child(uid).child("1");
+            fileRef.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            if(url.isEmpty()) {
+                                progressDialog.dismiss();
+                                Toast.makeText(Settings.this, "Error! Please try again!", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                progressDialog.dismiss();
+                                Toast.makeText(Settings.this, "Image uploaded successfully!", Toast.LENGTH_LONG).show();
+                                onStart();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
 }

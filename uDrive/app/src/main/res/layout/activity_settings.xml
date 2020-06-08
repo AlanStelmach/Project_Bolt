@@ -51,10 +51,9 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_marginStart="45dp"
-                    android:layout_marginEnd="45dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginEnd="45dp"
                     android:elevation="6dp"
-                    android:src="@drawable/ghost"
                     app:civ_border_color="@color/pinkashell"
                     app:civ_border_width="6dp" />
 

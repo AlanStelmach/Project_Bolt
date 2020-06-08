@@ -30,7 +30,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:elevation="6dp"
-                android:src="@mipmap/logo_udrive"
                 app:civ_border_color="@color/pinkashell"
                 app:civ_border_width="6dp" />
 

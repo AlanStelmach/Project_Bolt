@@ -1,5 +1,8 @@
-Wallet, AddingCreditCard, AddingFunds, PromoCode, History, Notifications - zrobione
-Seetings prawie skończone - brakuje jeszcze upload'u i download'u obrazków, logowanie przez Facebook'a do zrobienia
+Wallet, AddingCreditCard, AddingFunds, PromoCode, History, Notifications, Settings - zrobione
+Logowanie przez Facebook'a, Ekrany kierowcy, Rejestracja kierowcy i dodanie ulubionego miejsca - do zrobienia
+
+***Aby mieć obrazki trzeba albo zrobić upload'a obrazku w Firebase Storage Users_Images -> <Unique User ID> -> 1.jpeg, lub klikająć na menu wysuwanym w miejsce gdzie powinnien być obrazek a następnie w ekranie ustawień kolejne miejsce w którym powinien być obrazek***
+
 
 Michał:
 Wyświetlania dla kierowcy danych o kliencie, wyświetlanie kllientowi danych o kierowcy - dostosować zmiane image dla profili 
@@ -8,4 +11,4 @@ Możliwość przeszukiwania lokalizacji przez autocomplete dla klienta
 Zmodyfikowane tworzenie rekordów Customers i Drivers w bazie danych 
 Design nie ruszony 
 
-Do naprawy: Wyrzuca jakiś błąd przy tworzeniu CutomerRequest jest automatycznie usuwane 
+Do naprawy: Wyrzuca jakiś błąd przy tworzeniu CutomerRequest jest automatycznie usuwane

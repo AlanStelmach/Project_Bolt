@@ -1,20 +1,28 @@
 package com.example.udrive;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +31,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class Frag2 extends Fragment {
 
@@ -32,6 +43,9 @@ public class Frag2 extends Fragment {
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private Handler handler = new Handler();
+    private Uri imageuri;
+    private static final int IMAGE_REQUEST = 1;
+    private boolean status;
 
     public Frag2() {
     }
@@ -96,6 +110,8 @@ public class Frag2 extends Fragment {
                 }
                 else {
                     registerUser();
+
+                    Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -104,12 +120,73 @@ public class Frag2 extends Fragment {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
-                    },7000);
+                    },30000);
                 }
             }
         });
 
         return view;
+    }
+
+    private void FileChooser()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == IMAGE_REQUEST && resultCode == -1 && data != null && data.getData() != null)
+        {
+            imageuri = data.getData();
+            UploadImage();
+        }
+    }
+
+    private String getFileExtension (Uri uri)
+    {
+        ContentResolver contentResolver = getActivity().getApplicationContext().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void UploadImage()
+    {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Uploading...");
+        progressDialog.show();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+
+        if(imageuri != null)
+        {
+            final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("Users_Images").child(uid).child("1");
+            fileRef.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            if(url.isEmpty()) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getActivity(), "Error! Please try again!", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                progressDialog.dismiss();
+                                Toast.makeText(getActivity(), "Image uploaded successfully!", Toast.LENGTH_LONG).show();
+                                status = true;
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private void registerUser() {
@@ -133,38 +210,36 @@ public class Frag2 extends Fragment {
                                     progressBar.setVisibility(View.GONE);
                                     if(task.isSuccessful())
                                     {
-                                        FirebaseUser user1 = auth.getCurrentUser();
-                                        user1.sendEmailVerification().addOnCompleteListener(new OnCompleteListener() {
-                                            @Override
-                                            public void onComplete(@NonNull Task task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    etname.setText("");
-                                                    etsurname.setText("");
-                                                    etemail.setText("");
-                                                    etpnumber.setText("");
-                                                    etpassword.setText("");
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                                    builder.setCancelable(true);
-                                                    builder.setTitle("Verification has been send!");
-                                                    builder.setMessage("Please check your e-mail account for more details!");
-                                                    builder.show();
+                                        FileChooser();
+                                            FirebaseUser user1 = auth.getCurrentUser();
+                                            user1.sendEmailVerification().addOnCompleteListener(new OnCompleteListener() {
+                                                @Override
+                                                public void onComplete(@NonNull Task task) {
+                                                    if (task.isSuccessful()) {
+                                                        etname.setText("");
+                                                        etsurname.setText("");
+                                                        etemail.setText("");
+                                                        etpnumber.setText("");
+                                                        etpassword.setText("");
+                                                        AlertDialog.Builder closing_builder = new AlertDialog.Builder(getActivity());
+                                                        closing_builder.setCancelable(true);
+                                                        closing_builder.setTitle("Verification has been send!");
+                                                        closing_builder.setMessage("Please check your e-mail account for more details!");
+                                                        closing_builder.show();
+                                                    } else {
+                                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                                        builder.setCancelable(true);
+                                                        builder.setTitle("Error!");
+                                                        builder.setMessage("Sorry for that! :c");
+                                                        builder.show();
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                                    builder.setCancelable(true);
-                                                    builder.setTitle("Error!");
-                                                    builder.setMessage("Sorry for that! :c");
-                                                    builder.show();
-                                                }
-                                            }
-                                        });
+                                            });
+
                                         Toast.makeText(getActivity(),"Success!",Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
-                            //
                         }
                         else {
                             Toast.makeText(getActivity(),"Error!", Toast.LENGTH_LONG).show();

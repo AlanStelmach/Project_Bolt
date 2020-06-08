@@ -59,4 +59,5 @@
     <string name="value">000.00 PLN</string>
     <string name="credit_name_spec">Enter name (MasterCard / Visa)</string>
     <string name="edit_data">Edit Data</string>
+    <string name="call_driver">Call Driver</string>
 </resources>

@@ -18,8 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
+import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -45,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -92,7 +95,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public void onClick(View v) {
                 switch(status){
                     case 1://kierowca odbiera klienta
-                        status = 1;
+                        status = 2;
                         erasePolylines();
                         if(destinationLatLng.latitude != 0.0 && destinationLatLng.longitude != 0.0){
                             getRouteToMarker(destinationLatLng);
@@ -100,6 +103,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         mRideStatus.setText("drive completed");
                         break;
                     case 2: //kierowca jedzie do destination z klientem już w aucie
+                        recordRide(); //tworzy rekord historii przejazdu
                         endRide();
                         break;
                 }
@@ -122,7 +126,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         getAssignedCustomerDestination();
                         getAssignedCustomerInfo();
                 }else{
-                    endRide();
+                    //endRide();
                 }
             }
 
@@ -178,8 +182,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         mCustomerDestination.setText("Destination: --");
                     }
 
-                    Double destinationLat = 0.0;
-                    Double destinationLng = 0.0;
+                    double destinationLat = 0.0;
+                    double destinationLng = 0.0;
                     if(map.get("destinationLat") != null){
                         destinationLat = Double.valueOf(map.get("destinationLat").toString());
                     }
@@ -220,18 +224,24 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getRouteToMarker(LatLng pickupLatLng) { //tworzenie lini od lokalizacji kierowcy do lokalizacji klienta
-        String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f (%s)",mLastLocation.getLatitude(), mLastLocation.getLongitude(), "Your Location", pickupLatLng.latitude, pickupLatLng.longitude, "Pickup Location");
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        intent.setPackage("com.google.android.apps.maps");
-        startActivity(intent);
+        Routing routing = new Routing.Builder()
+                .key("AIzaSyCSypFlR1MFVLajSkBmRqCqvDCeNBA08yA")
+                .travelMode(AbstractRouting.TravelMode.DRIVING)
+                .withListener(this)
+                .alternativeRoutes(false)
+                .waypoints(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), pickupLatLng)
+                .build();
+        routing.execute();
     }
 
     private void endRide(){
         mRideStatus.setText("picked customer");
         erasePolylines();
+
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("customerRequest");
         driverRef.removeValue();
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(customerId);
@@ -247,6 +257,24 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mCustomerName.setText("");
         mCustomerSurname.setText("");
         mCustomerDestination.setText("Destination: --");
+    }
+
+    private void recordRide(){
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("history");
+        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerId).child("history");
+        DatabaseReference historyRef = FirebaseDatabase.getInstance().getReference().child("history");
+        String requestId = historyRef.push().getKey();
+        driverRef.child(requestId).setValue(true);
+        customerRef.child(requestId).setValue(true);
+
+        HashMap map = new HashMap();
+        map.put("driver", userId);
+        map.put("customer", customerId);
+        map.put("rating", 0);
+        historyRef.child(requestId).updateChildren(map);
+
+
     }
 
     @Override

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             app:cameraZoom="10"
             android:layout_height="match_parent"/>
-        
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -49,45 +49,149 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="bottom">
-
+            <!--Proposition of driver -->
             <LinearLayout
+                android:id="@+id/driverInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/driverInfo"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:visibility="gone">
-                <ImageView
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10sp"
+                android:orientation="vertical"
+                android:background="@drawable/shape4"
+                android:visibility="visible">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/your_location"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginTop="15sp"
+                        android:layout_alignParentTop="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current location"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="60dp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/linia_przerywana"
+                        android:layout_marginLeft="34sp"
+                        android:layout_marginTop="35dp"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/linia_pomiedzy_location"
+                        android:layout_marginTop="48dp"
+                        android:layout_marginLeft="60dp"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/marker_figma_shadow"
+                        android:layout_marginLeft="19.5sp"
+                        android:layout_marginTop="53dp"/>
+                    <TextView
+                        android:id="@+id/yourDestination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Destination"
+                        android:textStyle="bold"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginLeft="60dp"/>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/quantum_grey300">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
                     android:id="@+id/driverProfileImage"
                     android:src="@drawable/ghost"
-                    android:padding="20sp"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingLeft="40sp">
-                    <TextView
+                    android:layout_marginLeft="20sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginBottom="8sp"/>
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/driverName"
-                        android:paddingBottom="10sp"
-                        android:paddingTop="20sp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/driverSurname"
-                        android:paddingBottom="10sp"
-                        android:paddingTop="20sp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/driverCar"
-                        android:paddingBottom="10sp"
-                        android:paddingTop="20sp"/>
+                        android:layout_marginTop="20sp">
+                        <TextView
+                            android:id="@+id/driverName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10sp"
+                            android:layout_marginRight="3dp"
+                            android:singleLine="true"
+                            android:text="Name"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/driverSurname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_toRightOf="@+id/driverName"
+                            android:text="Surname"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/ratingDriver"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10sp"
+                            android:layout_below="@id/driverName"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:text="Rating"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/driverName"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="40sp"
+                            android:text="30 recommended"
+                            android:textStyle="bold"/>
+                    </RelativeLayout>
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/money_sign"
+                        android:layout_toLeftOf="@+id/requestPrice"
+                        android:layout_marginBottom="5dp"/>
+                    <TextView
+                        android:id="@+id/requestPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Price"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="15dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/currency"
+                        android:text="PLN"
+                        android:layout_toRightOf="@+id/requestPrice"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="10dp"/>
+                </RelativeLayout>
             </LinearLayout>
 
             <Button

@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,10 +87,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private SupportMapFragment mapFragment;
     private String customerId = "";
-    private Boolean isLoggingOut = false;
+
+    private LinearLayout mPopupNewRequest;
+    private Button mAcceptRequest, mCancelRequest;
+
     private LinearLayout mCustomerInfo;
     private ImageView mCustomerProfileImage;
-    private TextView mCustomerName, mCustomerSurname, mCustomerDestination, mCustomerCurrentLocation;
+    private TextView mCustomerName, mCustomerSurname, mCustomerDestination, mRequestPrice;
 
     private Switch mAvailableSwitch;
 
@@ -108,14 +112,18 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         polylines = new ArrayList<>();
+
+        mPopupNewRequest = (LinearLayout) findViewById(R.id.popupNewRequest);
+        mAcceptRequest = (Button) findViewById(R.id.acceptRequestButton);
+        mCancelRequest = (Button) findViewById(R.id.cancelRequestButton);
+
         mCustomerInfo = (LinearLayout) findViewById(R.id.customerInfo);
         mCustomerProfileImage = (ImageView) findViewById(R.id.customerProfileImage);
         mCustomerName = (TextView) findViewById(R.id.customerName);
         mCustomerSurname = (TextView) findViewById(R.id.customerSurname);
         mCustomerDestination = (TextView) findViewById(R.id.customerDestination);
-        mCustomerCurrentLocation = (TextView) findViewById(R.id.customerCurrentLocation);
+        mRequestPrice = (TextView) findViewById(R.id.requesPriceDriver);
 
         mAvailableSwitch = (Switch) findViewById(R.id.availableSwitch);
         mAvailableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -123,6 +131,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     connectDriver();
+                    final String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Acceptation");
+                    driverAcceptation.setValue(false);
                 }else{
                     disconnectDriver();
                 }
@@ -149,22 +160,37 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 }
             }
         });
-
         getAssignedCustomer();
     }
 
-    private void getAssignedCustomer(){     //przypisz klienta dla kierowcy
-        String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private void getAssignedCustomer(){     //sprawdzanie czy istnieją nowe requesty w bazie danych, jeśli tak to przypisywanie noweo klienta
+        final String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest").child("customerRideId");
+        final DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Acceptation");
         assignedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                        status = 1;
                         customerId = dataSnapshot.getValue().toString();
-                        getAssignedCustomerPickupLocation();
-                        getAssignedCustomerDestination();
-                        getAssignedCustomerInfo();
+                        mPopupNewRequest.setVisibility(View.VISIBLE);                       //Wyświetlenie popup menu czy akceptujesz przejazd
+                        mAcceptRequest.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {   //Kliknięcie Accept
+                                mPopupNewRequest.setVisibility(View.GONE);
+                                status = 1;
+                                driverAcceptation.setValue(true);
+                                getAssignedCustomerPickupLocation();
+                                getAssignedCustomerDestination();
+                                getAssignedCustomerInfo();
+                            }
+                        });
+                        mCancelRequest.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {   //Kliknięcie Cancel
+                                mPopupNewRequest.setVisibility(View.GONE);
+                                endRide();
+                            }
+                        });
                 }else{
                     endRide();
                 }
@@ -243,8 +269,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedCustomerInfo(){
         mCustomerInfo.setVisibility(View.VISIBLE);
-        /*FirebaseStorage storage = FirebaseStorage.getInstance();
-        final StorageReference reference = storage.getReference().child("Users_Images").child(customerId).child("1");*/
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference reference = storage.getReference().child("Users_Images").child(customerId).child("1");
         DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerId);
         mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -257,15 +283,21 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     if(map.get("surname")!=null) {
                         mCustomerSurname.setText(map.get("surname").toString());
                     }
-                    /*reference.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                            mCustomerProfileImage.setImageBitmap(bitmap);
-                        }
-                    });*/
+                    getCustomerImage();
                 }
             }
+            public void getCustomerImage(){
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference reference = storage.getReference().child("Users_Images").child(customerId).child("1");
+                reference.getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mCustomerProfileImage.setImageBitmap(bitmap);
+                    }
+                });
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -306,7 +338,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mCustomerName.setText("");
         mCustomerSurname.setText("");
         mCustomerDestination.setText("Destination: --");
-        //mCustomerProfileImage.setImageResource(R.drawable.ghost);
+        mCustomerProfileImage.setImageResource(R.drawable.ghost);
     }
 
     private void recordRide(){

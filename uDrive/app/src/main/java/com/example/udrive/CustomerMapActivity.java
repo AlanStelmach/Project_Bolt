@@ -87,6 +87,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private ImageView menu;
     private LatLng pickupLocation;
     private Boolean requestBol = false;
+    private Boolean driverAccept = false;
     private Marker pickupMarker;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -96,8 +97,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private String user_value;
     private String destination;
     private LatLng destinationLatLng;
+
     private LinearLayout mDriverInfo;
-    private TextView mDriverName, mDriverSurname, mDriverCar;
+    private TextView mDriverName, mDriverSurname, mDriverCar, mRequestPrice;
+    private ImageView mDriverImageProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +130,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mDriverName = (TextView) findViewById(R.id.driverName);
         mDriverSurname = (TextView) findViewById(R.id.driverSurname);
         mDriverCar = (TextView) findViewById(R.id.driverCar);
+        mRequestPrice = (TextView) findViewById(R.id.requestPrice);
+        mDriverCar = (TextView) findViewById(R.id.requestPrice);
+        mDriverImageProfile = (ImageView) findViewById(R.id.driverProfileImage);
+
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
@@ -265,12 +272,26 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         map.put("destinationLng", destinationLatLng.longitude);
                         driverRef.updateChildren(map);
                     }
+                    DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("Acceptation");
+                    driverLocation.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            driverAccept = dataSnapshot.getValue(Boolean.class);
+                            if(!driverAccept){
+                                getClosestDriver();
+                            }else{
+                                //Show driver location on Customer Map
+                                getDriverLocation();
+                                getDriverInfo();
+                                getHasRideEnded();
+                                mRequest.setText("Looking for a Driver Location...");
+                            }
+                        }
 
-                    //Show driver location on Customer Map
-                    getDriverLocation();
-                    getDriverInfo();
-                    getHasRideEnded();
-                    mRequest.setText("Looking for a Driver Location...");
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
                 }
             }
 
@@ -349,6 +370,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     private void getDriverInfo() {
         mDriverInfo.setVisibility(View.VISIBLE);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference reference = storage.getReference().child("Users_Images").child(driverFoundID).child("1");
         DatabaseReference mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID);
         mDriverDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -361,7 +384,19 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     if (map.get("surname") != null) {
                         mDriverSurname.setText(map.get("surname").toString());
                     }
+                    getDriverImage();
                 }
+            }
+            public void getDriverImage(){
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference reference = storage.getReference().child("Users_Images").child(driverFoundID).child("1");
+                reference.getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mDriverImageProfile.setImageBitmap(bitmap);
+                    }
+                });
 
             }
             @Override

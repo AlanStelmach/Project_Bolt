@@ -27,17 +27,4 @@
         android:id="@+id/logout_item"
         android:icon="@mipmap/logout"
         android:title="@string/logout" />
-    <item
-        android:id="@+id/empty1"
-        android:enabled="false"
-        android:title="" />
-    <item
-        android:id="@+id/empty2"
-        android:enabled="false"
-        android:title="" />
-    <item
-        android:id="@+id/become_driver"
-        android:title="@string/become_driver"
-        />
-
 </menu>

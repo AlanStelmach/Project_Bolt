@@ -40,13 +40,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="570dp"
+            android:layout_height="550dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="50dp"
             android:background="@drawable/shape4">
 
             <ListView
@@ -57,7 +57,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:padding="15dp"/>
+                android:padding="15dp" />
         </RelativeLayout>
 
     </RelativeLayout>

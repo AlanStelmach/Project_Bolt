@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E9E9E9"
+    android:background="@color/grey"
     tools:context=".ChooseUser">
 
     <TextView
@@ -24,8 +24,8 @@
     <RelativeLayout
         android:id="@+id/relativeLayout3"
         android:layout_width="300dp"
-        android:layout_height="450dp"
-        android:background="@color/white"
+        android:layout_height="470dp"
+        android:background="@drawable/gradient_choose"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
@@ -38,12 +38,10 @@
             android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="375dp"
             android:layout_marginBottom="25dp"
-            android:backgroundTint="@color/blue"
+            android:background="@drawable/button_background"
             android:text="@string/customer"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -52,33 +50,21 @@
             android:id="@+id/driverButton"
             android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="375dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="25dp"
-            android:backgroundTint="@color/blue"
+            android:background="@drawable/button_background"
             android:text="@string/driver"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="169dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="231dp"
-            android:text="Some picture"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/logo_udrive" />
+
     </RelativeLayout>
 
     <TextView

@@ -35,26 +35,13 @@ public class ChooseUser extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onStart();
         setContentView(R.layout.activity_choose_user);
         greetings = (TextView) findViewById(R.id.greetings_text);
-        FirebaseUser userid = FirebaseAuth.getInstance().getCurrentUser();
-        final String uid = userid.getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
-                surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
-                greetings.setText("Hello there "+name+" "+surname+"!");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
         customerButton = (Button) findViewById(R.id.customerButton);
         driverButton = (Button) findViewById(R.id.driverButton);
+        FirebaseUser userid = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = userid.getUid();
 
         customerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,5 +75,24 @@ public class ChooseUser extends AppCompatActivity {
             final Uri imageUri = data.getData();
             resultUri = imageUri;
         }
+
+    protected void onStart(){
+        super.onStart();
+        FirebaseUser userid = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = userid.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
+                surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
+                greetings.setText("Hello there "+name+" "+surname+"!");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }

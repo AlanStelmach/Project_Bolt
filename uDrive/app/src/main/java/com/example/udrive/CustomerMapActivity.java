@@ -88,13 +88,19 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private String destination;
     private LatLng destinationLatLng;
     private LinearLayout mDriverInfo;
-    private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverSurname, mDriverCar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            mapFragment.getMapAsync(this);
+        }else{
+            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+        }
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         navigationView = (NavigationView) findViewById(R.id.navigationView1);
@@ -102,7 +108,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
         mRequest = (Button) findViewById(R.id.request);
         menu = (ImageView) findViewById(R.id.menuButton);
 
@@ -112,7 +118,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mDriverName = (TextView) findViewById(R.id.driverName);
         mDriverSurname = (TextView) findViewById(R.id.driverSurname);
         mDriverCar = (TextView) findViewById(R.id.driverCar);
-        mDriverProfileImage = (ImageView) findViewById(R.id.driverProfileImage);
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView1);
@@ -353,8 +358,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mDriverSurname.setText(map.get("surname").toString());
                     }
                 }
-            }
 
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -411,7 +416,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mDriverInfo.setVisibility(View.GONE);
         mDriverName.setText("");
         mDriverSurname.setText("");
-
     }
 
     @Override

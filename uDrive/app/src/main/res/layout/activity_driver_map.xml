@@ -16,51 +16,118 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation= "vertical">
+        <ImageView
+            android:id="@+id/menuButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape3"
+            android:src="@mipmap/settings"/>
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Availability"
+            android:layout_margin="10sp"
+            android:layout_gravity="right"
+            android:id="@+id/availableSwitch"/>
+    </LinearLayout>
+
+    <!--Proposition Customer Request -->
+    <LinearLayout
         android:id="@+id/customerInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="40dp"
         android:orientation="vertical"
-        android:background="@android:color/white"
+        android:background="@drawable/shape4"
         android:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-         <ImageView
-            android:layout_width="100sp"
-            android:layout_height="100sp"
-            android:id="@+id/customerProfileImage"
-            android:src="@drawable/ghost"
-            android:padding="20sp"/>
-            <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="40sp">
-                <TextView
+            android:background="@drawable/shape4">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:id="@+id/customerProfileImage"
+                android:src="@drawable/ghost"
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="30sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="8sp"/>
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/customerDestination"
-                android:paddingBottom="10sp"
-                android:text="Destination: --"/>
+                android:layout_height="match_parent">
                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/customerName"
-                android:paddingBottom="10sp"
-                android:paddingTop="20sp"/>
+                    android:id="@+id/customerCurrentLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current location: "
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/customerSurname"
-                android:paddingBottom="10sp"
-                android:paddingTop="20sp"/>
-            </LinearLayout>
+                    android:id="@+id/customerDestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="30dp"
+                    android:textColor="@color/black"
+                    android:text="Destination:"
+                    android:textStyle="bold" />
+            </RelativeLayout>
         </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20sp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Name"
+                android:id="@+id/customerName"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="10sp"
+                />
+            <TextView
+                android:id="@+id/customerSurname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Surname"
+                android:layout_toRightOf="@+id/customerName"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <Button
+            android:id="@+id/rideStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="picked customer"
-            android:id="@+id/rideStatus"/>
+            android:text="Accept request"
+            android:textColor="@color/quantum_white_100"
+            android:textStyle="bold"
+            android:background="@drawable/button_background_purple"/>
+        </LinearLayout>
 
     </LinearLayout>
+
 </FrameLayout>

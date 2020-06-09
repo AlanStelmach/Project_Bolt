@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class Notification extends AppCompatActivity {
@@ -33,11 +31,15 @@ public class Notification extends AppCompatActivity {
     private int key_pos;
     final ArrayList<String> keys = new ArrayList<>();
     final ArrayList<String> notify = new ArrayList<>();
+    private String returnpoint = "com.example.udrive";
+    private String returnoption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        Intent intent = getIntent();
+        returnoption = intent.getStringExtra(returnpoint);
         back = (ImageView) findViewById(R.id.back5);
         delete = (ImageView) findViewById(R.id.deleting);
         notifyview = (ListView) findViewById(R.id.notify_view);
@@ -45,9 +47,17 @@ public class Notification extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Notification.this, CustomerMapActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                if(returnoption.equals("1")) {
+                    Intent intent = new Intent(Notification.this, CustomerMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                else if(returnoption.equals("2"))
+                {
+                    Intent intent = new Intent(Notification.this, DriverMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             }
         });
 

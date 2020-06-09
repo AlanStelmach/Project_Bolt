@@ -15,7 +15,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class History extends AppCompatActivity {
@@ -23,10 +22,14 @@ public class History extends AppCompatActivity {
     private ImageView back;
     private ListView historyview;
     final ArrayList<HistoryItem> historyItems = new ArrayList<>();
+    private String returnpoint = "com.example.udrive";
+    private String returnoption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        returnoption = intent.getStringExtra(returnpoint);
         setContentView(R.layout.activity_history);
         back = (ImageView) findViewById(R.id.back4);
         historyview = (ListView) findViewById(R.id.history_view);
@@ -34,9 +37,17 @@ public class History extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(History.this, CustomerMapActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                if(returnoption.equals("1")) {
+                    Intent intent = new Intent(History.this, CustomerMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                else if(returnoption.equals("2"))
+                {
+                    Intent intent = new Intent(History.this, DriverMapActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             }
         });
     }

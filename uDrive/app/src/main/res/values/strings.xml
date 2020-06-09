@@ -60,4 +60,8 @@
     <string name="credit_name_spec">Enter name (MasterCard / Visa)</string>
     <string name="edit_data">Edit Data</string>
     <string name="call_driver">Call Driver</string>
+    <string name="question">Are you sure that you want to logout ?</string>
+    <string name="reviews">Reviews</string>
+    <string name="earned">You earned</string>
+    <string name="send_cash">Send uDrive cash to account</string>
 </resources>

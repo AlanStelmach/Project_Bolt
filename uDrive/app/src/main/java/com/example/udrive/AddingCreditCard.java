@@ -32,6 +32,8 @@ public class AddingCreditCard extends AppCompatActivity {
     private EditText credit_card_name, credit_card_number, date1, date2, cvv;
     private String value;
     private String yes = "com.example.udrive";
+    private String data = "com.example.udrive/status";
+    private String returnoption;
     private Button save;
     private ProgressBar progressBar;
     private int limit;
@@ -42,6 +44,7 @@ public class AddingCreditCard extends AppCompatActivity {
         setContentView(R.layout.activity_adding_credit_card);
         Intent intent = getIntent();
         value = intent.getStringExtra(yes);
+        returnoption = intent.getStringExtra(data);
         back = (ImageView) findViewById(R.id.back6);
         credit_card_name = (EditText) findViewById(R.id.credit_card_name);
         credit_card_number = (EditText) findViewById(R.id.credit_card_number);
@@ -55,10 +58,19 @@ public class AddingCreditCard extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddingCreditCard.this, Wallet.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra(yes,value);
-                startActivity(intent);
+                if(returnoption.equals("1")) {
+                    Intent intent = new Intent(AddingCreditCard.this, Wallet.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra(yes, value);
+                    startActivity(intent);
+                }
+                else if(returnoption.equals("2"))
+                {
+                    Intent intent = new Intent(AddingCreditCard.this, Wallet_Driver.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra(yes, value);
+                    startActivity(intent);
+                }
             }
         });
 

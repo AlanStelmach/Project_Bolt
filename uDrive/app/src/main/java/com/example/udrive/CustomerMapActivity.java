@@ -1,6 +1,7 @@
 package com.example.udrive;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,7 +30,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
-
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -66,7 +66,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +118,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         navigationView.setNavigationItemSelectedListener(this);
 
         mRequest = (Button) findViewById(R.id.request);
-        menu = (ImageView) findViewById(R.id.menuButton);
+        menu = (ImageView) findViewById(R.id.menuButton1);
 
         destinationLatLng = new LatLng(0.0, 0.0);
 
@@ -525,12 +524,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             case R.id.history_item:
             {
                 Intent intent = new Intent(CustomerMapActivity.this, History.class);
+                intent.putExtra(data, returnpoint);
                 startActivity(intent);
                 break;
             }
             case R.id.notifications_item:
             {
                 Intent intent = new Intent(CustomerMapActivity.this, Notification.class);
+                intent.putExtra(data, returnpoint);
                  startActivity(intent);
                 break;
             }
@@ -543,11 +544,24 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
             case R.id.logout_item:
             {
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(CustomerMapActivity.this, "Logged out!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(CustomerMapActivity.this, SignUp.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                AlertDialog.Builder logout = new AlertDialog.Builder(CustomerMapActivity.this);
+                LayoutInflater factory = LayoutInflater.from(CustomerMapActivity.this);
+                final View custom = factory.inflate(R.layout.custom_layout, null);
+                logout.setView(custom);
+                logout.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(CustomerMapActivity.this, "Logging out!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(CustomerMapActivity.this, SignUp.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                });
+                logout.setNeutralButton("Cancel", null);
+                logout.setCancelable(true);
+                AlertDialog dialog = logout.create();
+                dialog.show();
                 break;
             }
             default:

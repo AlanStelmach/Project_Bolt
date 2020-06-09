@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -18,38 +20,42 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
-public class Wallet extends AppCompatActivity {
+public class Wallet_Driver extends AppCompatActivity {
 
-    private ImageView back, plus;
-    private TextView add_funds, add_card, udrive_cash;
     private String yes = "com.example.udrive";
-    private String chosen_one = "com.example.udrive.creditcard";
     private String data = "com.example.udrive/status";
-    private String returnpoint="1";
+    private String value ="";
+    private String returnpoint="2";
+    private ImageView back;
+    private ImageView plus;
+    private TextView add_card;
+    private TextView udrive_cash;
+    ArrayList<String> creditCardsnumber = new ArrayList<>();
     private ListView cardview;
     private String number="";
-    final ArrayList<String> creditCardsnumber = new ArrayList<>();
+    private Button send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet);
+        setContentView(R.layout.activity_wallet__driver);
         Intent intent = getIntent();
-        final String value = intent.getStringExtra(yes);
-        back = (ImageView) findViewById(R.id.back3);
-        plus = (ImageView) findViewById(R.id.plus1);
-        add_funds = (TextView) findViewById(R.id.add_funds);
-        add_card = (TextView) findViewById(R.id.add_card1);
-        udrive_cash = (TextView) findViewById(R.id.udrive_cash1);
+        value = intent.getStringExtra(yes);
+        udrive_cash = (TextView) findViewById(R.id.udrive_cash2);
         udrive_cash.setText(value+" PLN");
-        cardview = (ListView) findViewById(R.id.wallet_view1);
+        plus = (ImageView) findViewById(R.id.plus2);
+        add_card = (TextView) findViewById(R.id.add_card2);
+        back = (ImageView) findViewById(R.id.back9);
+        cardview = (ListView) findViewById(R.id.wallet_view2);
+        send = (Button) findViewById(R.id.send_money);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Wallet.this, CustomerMapActivity.class);
+                Intent intent = new Intent(Wallet_Driver.this, DriverMapActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
@@ -58,7 +64,7 @@ public class Wallet extends AppCompatActivity {
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Wallet.this, AddingCreditCard.class);
+                Intent intent = new Intent(Wallet_Driver.this, AddingCreditCard.class);
                 intent.putExtra(yes,value);
                 intent.putExtra(data,returnpoint);
                 startActivity(intent);
@@ -68,19 +74,19 @@ public class Wallet extends AppCompatActivity {
         add_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Wallet.this, AddingCreditCard.class);
+                Intent intent = new Intent(Wallet_Driver.this, AddingCreditCard.class);
                 intent.putExtra(yes,value);
                 intent.putExtra(data,returnpoint);
                 startActivity(intent);
             }
         });
 
-        add_funds.setOnClickListener(new View.OnClickListener() {
+        send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(number.isEmpty())
                 {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Wallet.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Wallet_Driver.this);
                     builder.setCancelable(true);
                     builder.setTitle("Select payment method!");
                     builder.setMessage("Please select payment method from list below.");
@@ -88,20 +94,18 @@ public class Wallet extends AppCompatActivity {
                 }
                 else if(number.equals("No any credit card"))
                 {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Wallet.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Wallet_Driver.this);
                     builder.setCancelable(true);
                     builder.setTitle("Add some credit card!");
                     builder.setMessage("Please add some credit card first.");
                     builder.show();
                 }
                 else {
-                    Intent intent = new Intent(Wallet.this, AddingFunds.class);
-                    intent.putExtra(yes, value);
-                    intent.putExtra(chosen_one,number);
-                    startActivity(intent);
+                    Toast.makeText(Wallet_Driver.this, "Done! Money has been send successfully!", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
         cardview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -136,9 +140,8 @@ public class Wallet extends AppCompatActivity {
                 if(creditCardsnumber.size() == 0)
                 {
                     creditCardsnumber.add("No any credit card");
-                    number = creditCardsnumber.get(0);
                 }
-                ArrayAdapter adapter = new ArrayAdapter(Wallet.this, R.layout.list_item, R.id.label, creditCardsnumber);
+                ArrayAdapter adapter = new ArrayAdapter(Wallet_Driver.this, R.layout.list_item, R.id.label, creditCardsnumber);
                 cardview.setAdapter(adapter);
             }
             @Override

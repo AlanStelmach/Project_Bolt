@@ -17,7 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".onAppKilled" android:stopWithTask="false"/>
+        <activity android:name=".Reviews"></activity>
+        <activity android:name=".Wallet_Driver" />
+        <activity android:name=".Wallet2" />
+
+        <service
+            android:name=".onAppKilled"
+            android:stopWithTask="false" />
 
         <activity android:name=".Settings" />
         <activity android:name=".AddingFunds" />

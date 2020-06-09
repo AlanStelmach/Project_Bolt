@@ -17,6 +17,9 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -25,14 +28,14 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
-
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -58,7 +61,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,49 +71,54 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, RoutingListener {
+public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, RoutingListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = DriverMapActivity.class.getSimpleName();
     private GoogleMap mMap;
     Location mLastLocation;
     LocationRequest mLocationRequest;
-
     private FusedLocationProviderClient mFusedLocationClient;
-
     private SupportMapFragment mapFragment;
     private String customerId = "";
     private Boolean isLoggingOut = false;
     private LinearLayout mCustomerInfo;
     private ImageView mCustomerProfileImage;
     private TextView mCustomerName, mCustomerSurname, mCustomerDestination, mCustomerCurrentLocation;
-
     private Switch mAvailableSwitch;
-
     private Button mRideStatus;
     private int status = 0;
     private String destination;
     private LatLng destinationLatLng;
+    private String data = "com.example.udrive";
+    private String returnpoint = "2";
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
+    private ImageView menu;
+    private String value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+        onStart();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer2);
+        navigationView = (NavigationView) findViewById(R.id.navigationView2);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawerOpen, R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
         polylines = new ArrayList<>();
         mCustomerInfo = (LinearLayout) findViewById(R.id.customerInfo);
         mCustomerProfileImage = (ImageView) findViewById(R.id.customerProfileImage);
@@ -116,6 +126,27 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mCustomerSurname = (TextView) findViewById(R.id.customerSurname);
         mCustomerDestination = (TextView) findViewById(R.id.customerDestination);
         mCustomerCurrentLocation = (TextView) findViewById(R.id.customerCurrentLocation);
+        menu = (ImageView) findViewById(R.id.menuButton2);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView2);
+        View headerView = navigationView.getHeaderView(0);
+        ImageView profilepic = (ImageView) headerView.findViewById(R.id.profilePic2);
+
+        profilepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DriverMapActivity.this, Settings.class);
+                intent.putExtra(data, returnpoint);
+                startActivity(intent);
+            }
+        });
 
         mAvailableSwitch = (Switch) findViewById(R.id.availableSwitch);
         mAvailableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -151,6 +182,48 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         });
 
         getAssignedCustomer();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = user.getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
+                String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
+                String balance = String.valueOf(dataSnapshot.child("Users").child(uid).child("wallet").getValue(String.class));
+                NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView2);
+                View headerView = navigationView.getHeaderView(0);
+                TextView name_surname = (TextView) headerView.findViewById(R.id.name_surname2);
+                TextView account_balance = (TextView) headerView.findViewById(R.id.account_balance2);
+                value = balance;
+                name_surname.setText(name + " " + surname);
+                account_balance.setText(balance + " PLN");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView2);
+        final View headerView2 = navigationView.getHeaderView(0);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference reference = storage.getReference().child("Users_Images").child(uid).child("1");
+        reference.getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                ImageView profile = (ImageView) headerView2.findViewById(R.id.profilePic2);
+                profile.setImageBitmap(bitmap);
+            }
+        });
     }
 
     private void getAssignedCustomer(){     //przypisz klienta dla kierowcy
@@ -496,5 +569,67 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             line.remove();
         }
         polylines.clear();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.wallet_item2:
+            {
+                Intent intent = new Intent(DriverMapActivity.this, Wallet_Driver.class);
+                intent.putExtra(data, value);
+                startActivity(intent);
+                break;
+            }
+            case  R.id.history_item2:
+            {
+                Intent intent = new Intent(DriverMapActivity.this, History.class);
+                intent.putExtra(data, returnpoint);
+                startActivity(intent);
+                break;
+            }
+            case R.id.notifications_item2:
+            {
+                Intent intent = new Intent(DriverMapActivity.this, Notification.class);
+                intent.putExtra(data, returnpoint);
+                startActivity(intent);
+                break;
+            }
+            case  R.id.reviews_item:
+            {
+                Intent intent = new Intent(DriverMapActivity.this, Reviews.class);
+                startActivity(intent);
+                break;
+            }
+            case  R.id.logout_item2:
+            {
+                AlertDialog.Builder logout = new AlertDialog.Builder(DriverMapActivity.this);
+                LayoutInflater factory = LayoutInflater.from(DriverMapActivity.this);
+                final View custom = factory.inflate(R.layout.custom_layout, null);
+                logout.setView(custom);
+                logout.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(DriverMapActivity.this, "Logging out!", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(DriverMapActivity.this, SignUp.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                });
+                logout.setNeutralButton("Cancel", null);
+                logout.setCancelable(true);
+                AlertDialog dialog = logout.create();
+                dialog.show();
+                break;
+            }
+            default:
+            {
+                Toast.makeText(DriverMapActivity.this,"Error! But how?!?!", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+        return false;
     }
 }

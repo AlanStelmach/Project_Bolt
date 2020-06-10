@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1386083341/Project_Bolt-uDrive.iml" filepath="$PROJECT_DIR$/.idea/modules/1386083341/Project_Bolt-uDrive.iml" group="uDrive" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Project_Bolt-uDrive-app.iml" filepath="$PROJECT_DIR$/.idea/modules/Project_Bolt-uDrive-app.iml" group="uDrive/app" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="uDrive/app" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-155987343/uDrive.iml" filepath="$PROJECT_DIR$/.idea/modules/-155987343/uDrive.iml" group="uDrive" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/uDrive-app.iml" filepath="$PROJECT_DIR$/.idea/modules/uDrive-app.iml" group="uDrive/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1386083341/uDriveApp-Project_Bolt-uDrive.iml" filepath="$PROJECT_DIR$/.idea/modules/1386083341/uDriveApp-Project_Bolt-uDrive.iml" group="uDrive" />
     </modules>
   </component>
 </project>

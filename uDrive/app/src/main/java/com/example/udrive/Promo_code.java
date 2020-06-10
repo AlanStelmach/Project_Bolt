@@ -84,7 +84,7 @@ public class Promo_code extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         promos.clear();
-                                        boolean check = false;
+                                        boolean check = Boolean.parseBoolean(null);
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                             String var1 = snapshot.child("name").getValue(String.class);
                                             Integer var2 = snapshot.child("value").getValue(Integer.class);
@@ -95,6 +95,10 @@ public class Promo_code extends AppCompatActivity {
                                                 check = true;
                                                 value = promos.get(i).getValue();
                                                 break;
+                                            }
+                                            else
+                                            {
+                                                check=false;
                                             }
                                         }
                                         if (check) {
@@ -110,9 +114,10 @@ public class Promo_code extends AppCompatActivity {
 
                                                 }
                                             });
+                                            Toast.makeText(Promo_code.this, "You get extra money to your use!", Toast.LENGTH_LONG).show();
                                             promo_code.setText("");
                                             progressBar.setVisibility(View.GONE);
-                                            Toast.makeText(Promo_code.this, "You get extra money to your use!", Toast.LENGTH_LONG).show();
+                                            return;
                                         } else {
                                             progressBar.setVisibility(View.GONE);
                                             Toast.makeText(Promo_code.this, "Promo code not found!", Toast.LENGTH_LONG).show();
@@ -128,7 +133,7 @@ public class Promo_code extends AppCompatActivity {
                             else
                             {
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(Promo_code.this, "This promo code was allready used on this account!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Promo_code.this, "This promo code was already used on this account!", Toast.LENGTH_LONG).show();
                             }
                         }
 

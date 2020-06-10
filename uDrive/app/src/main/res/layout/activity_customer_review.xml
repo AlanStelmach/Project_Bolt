@@ -32,6 +32,7 @@
             android:layout_height="100sp"
             android:id="@+id/driverProfileImage"
             android:src="@drawable/ghost"
+            android:elevation="@dimen/cardview_default_elevation"
             android:layout_marginLeft="150dp"
             android:layout_marginTop="120dp"
             android:layout_marginBottom="8sp"
@@ -43,6 +44,7 @@
             android:layout_marginTop="200dp"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
+            android:elevation="@dimen/cardview_compat_inset_shadow"
             android:layout_marginBottom="80dp">
             <TextView
                 android:id="@+id/nameDriver"

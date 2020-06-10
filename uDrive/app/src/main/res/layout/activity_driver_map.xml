@@ -33,6 +33,7 @@
                 android:background="@drawable/shape3"
                 android:src="@mipmap/settings"/>
             <Switch
+                android:theme="@style/SwitchCompatTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Availability"

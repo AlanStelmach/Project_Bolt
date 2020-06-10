@@ -38,20 +38,21 @@ public class HistoryList extends ArrayAdapter<HistoryItem> {
         TextView status = (TextView) history_item.findViewById(R.id.status);
 
         HistoryItem historyItem = historyItemArrayList.get(position);
+            if(historyItem.getCurrent_location().equals("You don't have any travel history!")) {
 
-        if(historyItem.getCurrent_location().equals("You don't have any travel history!"))
-        {
-            current_location.setText(historyItem.getCurrent_location());
-            destiny_location.setText(historyItem.getDestiny_location());
-            price.setText(historyItem.getPrice());
-            status.setText(historyItem.getStatus());
-        }
-        else {
-            current_location.setText("Current location: " + historyItem.getCurrent_location());
-            destiny_location.setText("Destiny location: " + historyItem.getDestiny_location());
-            price.setText("Price: " + historyItem.getPrice());
-            status.setText("Status: " + historyItem.getStatus());
-        }
+                current_location.setText(historyItem.getCurrent_location());
+                destiny_location.setText(historyItem.getDestiny_location());
+                price.setText(historyItem.getPrice());
+                status.setText(historyItem.getStatus());
+            }
+            else
+            {
+                current_location.setText("Current location: " + historyItem.getCurrent_location());
+                destiny_location.setText("Destiny location: " + historyItem.getDestiny_location());
+                price.setText("Price: " + historyItem.getPrice());
+                status.setText("Status: " + historyItem.getStatus());
+            }
+
 
         return history_item;
     }

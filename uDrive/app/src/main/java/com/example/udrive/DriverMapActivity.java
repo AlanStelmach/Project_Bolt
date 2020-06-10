@@ -185,7 +185,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         if(destinationLatLng.latitude != 0.0 && destinationLatLng.longitude != 0.0){
                             getRouteToMarker(destinationLatLng);
                         }
-                        mRideStatus.setText("Request completed");
+                        mRideStatus.setText("Request completed")
+                        ;
                         break;
                     case 2: //kierowca jedzie do destination z klientem już w aucie
                         recordRide(); //tworzy rekord historii przejazdu
@@ -240,7 +241,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getAssignedCustomer(){     //przypisz klienta dla kierowcy
-        String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest").child("customerRideId");
         final DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Acceptation");
         assignedCustomerRef.addValueEventListener(new ValueEventListener() {
@@ -255,6 +256,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         public void onClick(View v) {   //Kliknięcie Accept
                             mPopupNewRequest.setVisibility(View.GONE);
                             status = 1;
+                            FirebaseDatabase.getInstance().getReference().child("Notifications").child(driverId).child("1").push().setValue("You accepted new request!");
                             driverAcceptation.setValue(true);
                             getAssignedCustomerPickupLocation();
                             getAssignedCustomerDestination();
@@ -265,6 +267,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         @Override
                         public void onClick(View v) {   //Kliknięcie Cancel
                             mPopupNewRequest.setVisibility(View.GONE);
+                            FirebaseDatabase.getInstance().getReference().child("Notifications").child(driverId).child("1").push().setValue("You canceled new request!");
                             endRide();
                         }
                     });
@@ -422,18 +425,26 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void recordRide(){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("history");
-        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerId).child("history");
-        DatabaseReference historyRef = FirebaseDatabase.getInstance().getReference().child("history");
-        String requestId = historyRef.push().getKey();
-        driverRef.child(requestId).setValue(true);
-        customerRef.child(requestId).setValue(true);
+        DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId);
+        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerId);
 
-        HashMap map = new HashMap();
-        map.put("driver", userId);
-        map.put("customer", customerId);
-        map.put("rating", 0);
-        historyRef.child(requestId).updateChildren(map);
+        HistoryItem historyDriver = new HistoryItem(userId,"You were there!", destination, "100PLN", "Completed");
+        HistoryItem historyCustomer = new HistoryItem(userId,"You were there!", destination, "100PLN", "Completed");
+        FirebaseDatabase.getInstance().getReference().child("History").child(userId).child("1").push().setValue(historyDriver).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                return;
+            }
+        });
+        FirebaseDatabase.getInstance().getReference().child("History").child(customerId).child("1").push().setValue(historyCustomer).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                return;
+            }
+        });
+        FirebaseDatabase.getInstance().getReference().child("Notifications").child(userId).child("1").push().setValue("You completed new request!");
+        FirebaseDatabase.getInstance().getReference().child("Notifications").child(customerId).child("1").push().setValue("Your request has been completed!");
+
     }
 
     @Override

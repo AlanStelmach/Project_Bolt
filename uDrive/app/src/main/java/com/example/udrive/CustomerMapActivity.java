@@ -167,7 +167,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_figma)));
 
                     mRequest.setText("Getting your driver....");
-
+                    FirebaseDatabase.getInstance().getReference().child("Notifications").child(userId).child("1").push().setValue("You created new request!");
                     getClosestDriver();
                 }
             }
@@ -279,6 +279,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                 getClosestDriver();
                             }else{
                                 //Show driver location on Customer Map
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String userId = user.getUid();
+                                FirebaseDatabase.getInstance().getReference().child("Notifications").child(userId).child("1").push().setValue("Driver is coming right now for you!");
                                 getDriverLocation();
                                 getDriverInfo();
                                 getHasRideEnded();

@@ -1,6 +1,7 @@
 package com.example.udrive;
 
 public class HistoryItem {
+    private String driver_id;
     private String current_location;
     private String destiny_location;
     private String price;
@@ -11,7 +12,8 @@ public class HistoryItem {
 
     }
 
-    public HistoryItem(String current_location, String destiny_location, String price, String status) {
+    public HistoryItem(String driver_id, String current_location, String destiny_location, String price, String status) {
+        this.driver_id = driver_id;
         this.current_location = current_location;
         this.destiny_location = destiny_location;
         this.price = price;
@@ -48,5 +50,13 @@ public class HistoryItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDriver_id() {
+        return driver_id;
+    }
+
+    public void setDriver_id(String driver_id) {
+        this.driver_id = driver_id;
     }
 }

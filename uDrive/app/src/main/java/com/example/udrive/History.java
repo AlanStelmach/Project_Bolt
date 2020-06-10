@@ -64,15 +64,16 @@ public class History extends AppCompatActivity {
                 historyItems.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
+                    String var = snapshot.child("driver_id").getValue(String.class);
                     String var1 = snapshot.child("current_location").getValue(String.class);
                     String var2 = snapshot.child("destiny_location").getValue(String.class);
                     String var3 = snapshot.child("price").getValue(String.class);
                     String var4 = snapshot.child("status").getValue(String.class);
-                    historyItems.add(new HistoryItem(var1, var2, var3, var4));
+                    historyItems.add(new HistoryItem(var,var1, var2, var3, var4));
                 }
                 if(historyItems.size() == 0)
                 {
-                    historyItems.add(new HistoryItem("You don't have any travel history!", "","",""));
+                    historyItems.add(new HistoryItem("","You don't have any travel history!", "","",""));
                 }
                 HistoryList adapter = new HistoryList(History.this, historyItems);
                 historyview.setAdapter(adapter);

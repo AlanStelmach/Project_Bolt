@@ -4,6 +4,7 @@ Logowanie przez Facebook'a, Rejestracja kierowcy i dodanie ulubionego miejsca - 
 
 Michał:
 Design dla Customera i Drivera - zrobione
-Historia, Notification, Rating, Price - do zrobienia
+Rating - rozpoczęte klasa i design , CustomerReview
+Historia, Notification, Price - do zrobienia
 
 

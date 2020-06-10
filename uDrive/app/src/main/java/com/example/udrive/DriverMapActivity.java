@@ -165,9 +165,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     connectDriver();
-                    final String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Acceptation");
                     driverAcceptation.setValue(false);
+                    DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Working");
+                    driverWorking.setValue(true);
                 }else{
                     disconnectDriver();
                 }
@@ -185,8 +187,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         if(destinationLatLng.latitude != 0.0 && destinationLatLng.longitude != 0.0){
                             getRouteToMarker(destinationLatLng);
                         }
-                        mRideStatus.setText("Request completed")
-                        ;
+                        mRideStatus.setText("Request completed");
                         break;
                     case 2: //kierowca jedzie do destination z klientem już w aucie
                         recordRide(); //tworzy rekord historii przejazdu
@@ -244,6 +245,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         final String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest").child("customerRideId");
         final DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Acceptation");
+        final DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("Working");
         assignedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -258,6 +260,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                             status = 1;
                             FirebaseDatabase.getInstance().getReference().child("Notifications").child(driverId).child("1").push().setValue("You accepted new request!");
                             driverAcceptation.setValue(true);
+                            driverWorking.setValue(true);
                             getAssignedCustomerPickupLocation();
                             getAssignedCustomerDestination();
                             getAssignedCustomerInfo();
@@ -401,8 +404,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         erasePolylines();
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("Working");
+        driverWorking.setValue(false);
         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("customerRequest");
         driverRef.removeValue();
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
         GeoFire geoFire = new GeoFire(ref);

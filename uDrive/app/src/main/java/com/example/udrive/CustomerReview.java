@@ -3,6 +3,9 @@ package com.example.udrive;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.Map;
 
 public class CustomerReview extends AppCompatActivity {
 
@@ -31,11 +38,15 @@ public class CustomerReview extends AppCompatActivity {
     private RatingBar mRatingDriver;
     private float ratingStars;
     private String name_surname;
+    private String driver_id;
+    private String yes = "com.example.udrive";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_review);
+        Intent intent = getIntent();
+        driver_id = intent.getStringExtra(yes);
         onStart();
         mDriverImageProfile = (ImageView) findViewById(R.id.driverProfileImage);
         mCommentText = (EditText) findViewById(R.id.commentText);
@@ -54,18 +65,18 @@ public class CustomerReview extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String comment = mCommentText.getText().toString();
-                if(comment.isEmpty())
-                {
-                    comment="Ride was ok!";
+                if (comment.isEmpty()) {
+                    comment = "Ride was ok!";
                 }
-
                 Rating rating = new Rating(ratingStars, comment, name_surname);
-                FirebaseDatabase.getInstance().getReference().child("Rating").child("kierowca_id").child("1").push().setValue(rating).addOnSuccessListener(new OnSuccessListener<Void>() {
+                FirebaseDatabase.getInstance().getReference().child("Rating").child(driver_id).child("1").push().setValue(rating).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         return;
                     }
                 });
+                Intent intent2 = new Intent(CustomerReview.this, CustomerMapActivity.class);
+                startActivity(intent2);
             }
         });
 
@@ -83,12 +94,37 @@ public class CustomerReview extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("Users").child(uid).child("name").getValue(String.class);
                 String surname = dataSnapshot.child("Users").child(uid).child("surname").getValue(String.class);
-                name_surname=name+" "+surname;
+                name_surname = name + " " + surname;
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        DatabaseReference mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(driver_id);
+        mDriverDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String nameDriver = dataSnapshot.child("name").getValue(String.class);
+                    mNameDriver.setText(nameDriver);
+                    String surnameDriver = dataSnapshot.child("surname").getValue(String.class);
+                    mSurnameDriver.setText(surnameDriver);
+                    getDriverImage();
+            }
 
+            public void getDriverImage() {
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference reference = storage.getReference().child("Users_Images").child(driver_id).child("1");
+                reference.getBytes(1024 * 1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mDriverImageProfile.setImageBitmap(bitmap);
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }

@@ -87,6 +87,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LatLng pickupLocation;
     private Boolean requestBol = false;
     private Boolean driverAccept = false;
+    private Boolean driverWorkingOnRequest;
     private Marker pickupMarker;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -100,6 +101,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LinearLayout mDriverInfo;
     private TextView mDriverName, mDriverSurname, mDriverCar, mRequestPrice;
     private ImageView mDriverImageProfile;
+    private TextView mYourDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +133,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mRequestPrice = (TextView) findViewById(R.id.requestPrice);
         mDriverCar = (TextView) findViewById(R.id.requestPrice);
         mDriverImageProfile = (ImageView) findViewById(R.id.driverProfileImage);
+        mYourDestination = (TextView) findViewById(R.id.yourDestination);
 
 
 
@@ -384,6 +387,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mDriverSurname.setText(map.get("surname").toString());
                     }
                     getDriverImage();
+                    mYourDestination.setText(destination);
                 }
             }
             public void getDriverImage(){
@@ -415,7 +419,25 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 if (dataSnapshot.exists()) {
 
                 } else {
-                    endRide();
+                    DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("Working");
+                    driverWorking.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            driverWorkingOnRequest = dataSnapshot.getValue(Boolean.class);
+                            if(driverWorkingOnRequest){
+                                getHasRideEnded();
+                            }else{
+                                Intent intent = new Intent(CustomerMapActivity.this, CustomerReview.class);
+                                intent.putExtra(data, driverFoundID);
+                                startActivity(intent);
+                                endRide();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
                 }
             }
 

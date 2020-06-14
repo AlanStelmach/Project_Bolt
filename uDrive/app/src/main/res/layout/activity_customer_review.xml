@@ -99,18 +99,18 @@
                 android:layout_marginTop="200dp"
                 android:numStars="5"
                 android:stepSize="1"/>
+
             <EditText
                 android:id="@+id/commentText"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginTop="270dp"
-                android:background="@color/grey_text_edit"
-                android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
-                android:text="Additional comments..."
-                android:textSize="11dp"
+                android:layout_marginTop="270dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/grey_text_edit"
+                android:hint="@string/comment_section"
 
-                />
+                android:textSize="11dp" />
 
             <Button
                 android:id="@+id/submitButton"

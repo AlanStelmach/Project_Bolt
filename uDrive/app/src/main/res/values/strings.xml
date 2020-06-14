@@ -64,4 +64,5 @@
     <string name="reviews">Reviews</string>
     <string name="earned">You earned</string>
     <string name="send_cash">Send uDrive cash to account</string>
+    <string name="comment_section">Additional comments...</string>
 </resources>

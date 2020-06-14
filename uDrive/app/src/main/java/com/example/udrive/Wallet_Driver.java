@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Wallet_Driver extends AppCompatActivity {
 
@@ -102,6 +103,12 @@ public class Wallet_Driver extends AppCompatActivity {
                 }
                 else {
                     Toast.makeText(Wallet_Driver.this, "Done! Money has been send successfully!", Toast.LENGTH_LONG).show();
+                    udrive_cash.setText("0 PLN");
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+                    final HashMap<String, Object> map = new HashMap<>();
+                    map.put("wallet", "0");
+                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(map);
                 }
             }
         });

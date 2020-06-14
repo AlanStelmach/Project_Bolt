@@ -110,17 +110,6 @@ public class Frag2 extends Fragment {
                 }
                 else {
                     registerUser();
-
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(getActivity(), SignUp.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }
-                    },30000);
                 }
             }
         });
@@ -225,6 +214,15 @@ public class Frag2 extends Fragment {
                                                         closing_builder.setCancelable(true);
                                                         closing_builder.setTitle("Verification has been send!");
                                                         closing_builder.setMessage("Please check your e-mail account for more details!");
+                                                        closing_builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                Intent intent = new Intent(getActivity(), SignUp.class);
+                                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                startActivity(intent);
+                                                            }
+                                                        });
                                                         closing_builder.show();
                                                     } else {
                                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

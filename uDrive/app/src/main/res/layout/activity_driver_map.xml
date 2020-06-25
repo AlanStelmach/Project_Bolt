@@ -134,7 +134,6 @@
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="5dp"
                         android:layout_toRightOf="@+id/textDestination"
-                        android:text="Destination"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
                     <TextView

@@ -97,9 +97,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private String user_value;
     private String destination;
     private LatLng destinationLatLng;
-
+    private double requestPrice;
     private LinearLayout mDriverInfo;
-    private TextView mDriverName, mDriverSurname, mDriverCar, mRequestPrice;
+    private TextView mDriverName, mDriverSurname, mRequestPrice;
     private ImageView mDriverImageProfile;
     private TextView mYourDestination;
 
@@ -131,7 +131,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mDriverName = (TextView) findViewById(R.id.driverName);
         mDriverSurname = (TextView) findViewById(R.id.driverSurname);
         mRequestPrice = (TextView) findViewById(R.id.requestPrice);
-        mDriverCar = (TextView) findViewById(R.id.requestPrice);
         mDriverImageProfile = (ImageView) findViewById(R.id.driverProfileImage);
         mYourDestination = (TextView) findViewById(R.id.yourDestination);
 
@@ -167,6 +166,17 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
                     pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(pickupLocation.latitude);
+                    loc1.setLongitude(pickupLocation.longitude);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(destinationLatLng.latitude);
+                    loc2.setLongitude(destinationLatLng.longitude);
+                    requestPrice = (double) ((double)Math.round((loc1.distanceTo(loc2) * 0.005) * 100d) / 100d);
+                    ref.child(userId).child("price").setValue(requestPrice);
+
                     pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_figma)));
 
                     mRequest.setText("Getting your driver....");
@@ -271,6 +281,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         map.put("destination", destination);
                         map.put("destinationLat", destinationLatLng.latitude);
                         map.put("destinationLng", destinationLatLng.longitude);
+                        map.put("requestPrice", requestPrice);
                         driverRef.updateChildren(map);
                     }
                     DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("Acceptation");
@@ -359,9 +370,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     {
                         mRequest.setText("Driver's Here");
                     } else {
-                        mRequest.setText("Driver Found: " + String.valueOf(distance));
+                        mRequest.setText("Driver Distance : " + String.valueOf(distance));
                     }
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver")); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.auto_driver))); //tworzenie znacznika w miejsu gdzie znajduje się kierowca
                 }
             }
 
@@ -388,6 +399,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     }
                     getDriverImage();
                     mYourDestination.setText(destination);
+                    mRequestPrice.setText(String.valueOf(requestPrice));
                 }
             }
             public void getDriverImage(){
@@ -427,6 +439,13 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                             if(driverWorkingOnRequest){
                                 getHasRideEnded();
                             }else{
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String uid = user.getUid();
+                                double result = Double.parseDouble(user_value) - requestPrice;
+                                HashMap<String, Object> money = new HashMap<>();
+                                money.put("wallet", String.valueOf(result));
+                                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(money);
+                                onStart();
                                 Intent intent = new Intent(CustomerMapActivity.this, CustomerReview.class);
                                 intent.putExtra(data, driverFoundID);
                                 startActivity(intent);

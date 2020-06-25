@@ -87,6 +87,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private FusedLocationProviderClient mFusedLocationClient;
     private SupportMapFragment mapFragment;
     private String customerId = "";
+    private float rideDistance;
 
     private LinearLayout mPopupNewRequest;
     private Button mAcceptRequest, mCancelRequest;
@@ -94,6 +95,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private LinearLayout mCustomerInfo;
     private ImageView mCustomerProfileImage;
     private TextView mCustomerName, mCustomerSurname, mCustomerDestination, mPriceRequest, mPhoneNumber;
+    private String priceRequest;
 
     private Switch mAvailableSwitch;
     private Button mRideStatus;
@@ -315,7 +317,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
-    private void getAssignedCustomerDestination(){     //przypisz klienta dla kierowcy
+    private void getAssignedCustomerDestination(){
         String driverId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference assignedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverId).child("customerRequest");
         assignedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -368,6 +370,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         mPhoneNumber.setText(map.get("pnumber").toString());
                     }
                     getCustomerImage();
+                    getPriceRequest();
                 }
             }
             public void getCustomerImage(){
@@ -378,6 +381,33 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     public void onSuccess(byte[] bytes) {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         mCustomerProfileImage.setImageBitmap(bitmap);
+                    }
+                });
+            }
+            public void getPriceRequest(){
+                DatabaseReference mPriceCustomerRequest =  FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerId);
+                mPriceCustomerRequest.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                            if(map.get("price")!=null){
+                                mPriceRequest.setText(map.get("price").toString());
+                                priceRequest = map.get("price").toString();
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String uid = user.getUid();
+                                double result = Double.parseDouble(value) + Double.parseDouble(priceRequest);
+                                HashMap<String, Object> money = new HashMap<>();
+                                money.put("wallet", String.valueOf(result));
+                                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).updateChildren(money);
+                                onStart();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
             }
@@ -402,10 +432,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private void endRide(){
         mRideStatus.setText("Picked customer");
         erasePolylines();
+        priceRequest = ("");
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("Working");
         driverWorking.setValue(false);
+        DatabaseReference driverAcceptation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("Acceptation");
+        driverAcceptation.setValue(false);
         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId).child("customerRequest");
         driverRef.removeValue();
 
@@ -414,6 +447,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(customerId);
         customerId = "";
+        rideDistance = 0;
 
         if(pickupMarker != null){
             pickupMarker.remove();
@@ -427,15 +461,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         mCustomerDestination.setText("Destination: --");
         mCustomerProfileImage.setImageResource(R.drawable.ghost);
         mPhoneNumber.setText("");
+        mPriceRequest.setText("");
     }
 
     private void recordRide(){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userId);
-        DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerId);
-
-        HistoryItem historyDriver = new HistoryItem(userId,"You were there!", destination, "100PLN", "Completed");
-        HistoryItem historyCustomer = new HistoryItem(userId,"You were there!", destination, "100PLN", "Completed");
+        HistoryItem historyDriver = new HistoryItem(userId,"You were there!", destination, priceRequest+" PLN", "Completed");
+        HistoryItem historyCustomer = new HistoryItem(userId,"You were there!", destination, priceRequest+" PLN", "Completed");
         FirebaseDatabase.getInstance().getReference().child("History").child(userId).child("1").push().setValue(historyDriver).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -487,6 +519,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         public void onLocationResult(LocationResult locationResult) {
             for(Location location : locationResult.getLocations()){
                 if(getApplicationContext() != null) {
+
                     mLastLocation = location;
                     //w tej funkcji o to że chcemy zmienić centralne położenie kamery w momencie gdy użytkownik zmieni swoją pozycję, aby ekran wyśrodkował tą pozycję
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());

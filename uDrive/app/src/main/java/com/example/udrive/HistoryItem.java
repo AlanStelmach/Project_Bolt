@@ -7,7 +7,7 @@ public class HistoryItem {
     private String price;
     private String status;
 
-    public  HistoryItem()
+    public  HistoryItem(String userId, String current_location, String destination, double priceRequest, String completed)
     {
 
     }

@@ -1,6 +1,7 @@
 package com.example.udrive;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -116,7 +117,7 @@ public class Frag3 extends Fragment {
                         }
                         else
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                             builder.setCancelable(true);
                             builder.setTitle("Verification first!");
                             builder.setMessage("We can't let you log in without verification! Please check your e-mail account for more details!");

@@ -7,8 +7,8 @@
     tools:context=".AddingFunds">
 
     <RelativeLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="60dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/shape4" >
+            android:background="@drawable/shape4">
 
             <TextView
                 android:id="@+id/paymenttext"

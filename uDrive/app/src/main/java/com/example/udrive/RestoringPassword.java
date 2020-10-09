@@ -19,6 +19,7 @@ public class RestoringPassword extends AppCompatActivity {
     private Button sent;
     private ImageView back;
     private FirebaseAuth auth;
+    private String temail ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,8 @@ public class RestoringPassword extends AppCompatActivity {
         email = (EditText) findViewById(R.id.RestoringPassword);
         sent = (Button) findViewById(R.id.SentButton);
         back = (ImageView) findViewById(R.id.back1);
+
+        auth = FirebaseAuth.getInstance();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +43,7 @@ public class RestoringPassword extends AppCompatActivity {
         sent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String temail = email.getText().toString();
+                temail = email.getText().toString();
                 if(temail.isEmpty())
                 {
                     Toast.makeText(RestoringPassword.this,"Please enter e-mail!",Toast.LENGTH_LONG).show();

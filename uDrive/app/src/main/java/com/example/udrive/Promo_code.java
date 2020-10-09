@@ -37,9 +37,9 @@ public class Promo_code extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promo_code);
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         String message = intent.getStringExtra(yes);
-        var_wallet = Integer.parseInt(message);
+        var_wallet = Integer.parseInt(message);*/
         back = (ImageView) findViewById(R.id.back2);
         progressBar = (ProgressBar) findViewById(R.id.progressBar3);
         check_code = (Button) findViewById(R.id.check_code);

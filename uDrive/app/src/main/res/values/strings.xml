@@ -34,7 +34,7 @@
     <string name="drawerClose">drawerClose</string>
     <string name="restoring_password">Forgot your password?</string>
     <string name="restoring_text">Please enter your email address below to receive your password reset instructions.</string>
-    <string name="sent">Sent</string>
+    <string name="sent">Send</string>
     <string name="add_card">Add card</string>
     <string name="payment_method">Payment method</string>
     <string name="add_funds">Add funds</string>

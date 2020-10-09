@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CustomerReview">
+
     <RelativeLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_screen_gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/splash_screen_gradient">
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
@@ -28,24 +29,25 @@
             app:srcCompat="@mipmap/village1" />
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/driverProfileImage"
             android:layout_width="100sp"
             android:layout_height="100sp"
-            android:id="@+id/driverProfileImage"
-            android:src="@drawable/ghost"
-            android:elevation="@dimen/cardview_default_elevation"
             android:layout_marginLeft="150dp"
             android:layout_marginTop="120dp"
             android:layout_marginBottom="8sp"
-            />
+            android:elevation="@dimen/cardview_default_elevation"
+            android:src="@drawable/ghost" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/shape4"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="200dp"
             android:layout_marginRight="40dp"
-            android:layout_marginLeft="40dp"
-            android:elevation="@dimen/cardview_compat_inset_shadow"
-            android:layout_marginBottom="80dp">
+            android:layout_marginBottom="80dp"
+            android:background="@drawable/shape4"
+            android:elevation="@dimen/cardview_compat_inset_shadow">
+
             <TextView
                 android:id="@+id/nameDriver"
                 android:layout_width="wrap_content"
@@ -53,44 +55,48 @@
                 android:layout_marginLeft="100dp"
                 android:layout_marginTop="30dp"
                 android:text="Name"
-                android:textStyle="bold"
-                android:textSize="18dp"/>
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/surnameDriver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="30dp"
                 android:layout_toRightOf="@+id/nameDriver"
                 android:text="Surname"
-                android:textStyle="bold"
-                android:textSize="18dp"/>
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="100dp"
                 android:layout_marginRight="20dp">
+
                 <TextView
                     android:id="@+id/text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
                     android:text="How was your trip ?"
-                    android:textSize="24dp"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="40dp"/>
+                    android:textSize="24dp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
                     android:layout_below="@+id/text"
+                    android:layout_marginTop="14dp"
                     android:text="Your feedback will help imporve driving experince"
                     android:textAlignment="center"
-                    android:textSize="14dp"
-                    android:textColor="@color/quantum_grey"/>
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="14dp" />
             </RelativeLayout>
+
             <RatingBar
                 android:id="@+id/ratingForDriver"
                 android:layout_width="wrap_content"
@@ -98,7 +104,7 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="200dp"
                 android:numStars="5"
-                android:stepSize="1"/>
+                android:stepSize="1" />
 
             <EditText
                 android:id="@+id/commentText"
@@ -116,12 +122,12 @@
                 android:id="@+id/submitButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="390dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
                 android:background="@drawable/button_background"
                 android:text="Submit Review"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 

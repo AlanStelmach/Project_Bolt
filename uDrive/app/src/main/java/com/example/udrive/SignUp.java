@@ -33,7 +33,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth = FirebaseAuth.getInstance();
             FirebaseUser user = auth.getCurrentUser();
             if(user != null) {
                 if (user.isEmailVerified()) {
